@@ -6,7 +6,7 @@ import { Appointment } from "src/modules/appointment/entities/appointment.entity
 import { CaseDocument } from "src/modules/documents/entities/document.entity";
 import { ActivityLog } from "src/modules/activity/entities/activity.entity";
 
-@Entity()
+@Entity('users')
 export class User {
 
     @PrimaryGeneratedColumn()

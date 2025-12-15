@@ -8,7 +8,7 @@ import { DocumentsModule } from './modules/documents/documents.module';
 import { CaseModule } from './modules/case/case.module';
 import { AppointmentModule } from './modules/appointment/appointment.module';
 import { ActivityModule } from './modules/activity/activity.module';
-import entities from './common/typeorm/indes';
+import entities from './common/typeorm/index';
 
 @Module({
   imports: [TypeOrmModule.forRoot({
@@ -19,9 +19,10 @@ import entities from './common/typeorm/indes';
     password: 'kendrix',
     database: 'CMS',
     entities: entities,
-    synchronize: true
+    synchronize: true,
+    logging: true,
   }), UserModule, DocumentsModule, CaseModule, AppointmentModule, ActivityModule],
-  controllers: [AppController, UserController],
+  controllers: [AppController],
   providers: [AppService],
 })
 export class AppModule {}
