@@ -1,7 +1,10 @@
 import { CaseStatus } from "src/common/enums/case-status.enum";
 import { UserRole } from "src/common/enums/user-role.enum";
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
-
+import { Case } from "src/modules/case/entities/case.entity";
+import { Appointment } from "src/modules/appointment/entities/appointment.entity";
+import { CaseDocument } from "src/modules/documents/entities/document.entity";
+import { ActivityLog } from "src/modules/activity/entities/activity.entity";
 
 @Entity()
 export class User {
@@ -39,7 +42,19 @@ export class User {
     @Column({name: "updated_at"})
     updatedAt: string;
 
-    // @OneToMany(() => CaseStatus)
+    @OneToMany(() => Case, (caseEntity) => caseEntity.lawyer)
+    casesAsLawyer: Case[];
 
+    @OneToMany(() => Case, (caseEntity) => caseEntity.client)
+    casesAsClient: Case[];
+
+    @OneToMany(() => CaseDocument, (caseDocument) => caseDocument.uploader)
+    documents: CaseDocument[];
+
+    @OneToMany(() => Appointment, (appointment) => appointment.user)
+    appointments: Appointment[];
+
+    @OneToMany(() => ActivityLog, (log) => log.user)
+    activityLogs: ActivityLog[];
 
 }

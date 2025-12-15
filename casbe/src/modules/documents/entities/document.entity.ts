@@ -1,9 +1,9 @@
 import { User } from "src/modules/user/entities/user.entity";
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 
 
 @Entity('case_documents')
-export class Document {
+export class CaseDocument {
 
     @PrimaryGeneratedColumn()
     id: number;
@@ -35,5 +35,8 @@ export class Document {
     @Column({name: "created_at", type: "timestamp", default: () => "CURRENT_TIMESTAMP"})
     createdAt: Date;
 
+    @ManyToOne(() => User, (user) => user.documents)
+    @JoinColumn({name: 'uploaded_by'})
+    uploader: User;
     
 }
