@@ -8,6 +8,7 @@ import { DocumentsModule } from './modules/documents/documents.module';
 import { CaseModule } from './modules/case/case.module';
 import { AppointmentModule } from './modules/appointment/appointment.module';
 import { ActivityModule } from './modules/activity/activity.module';
+import { CloudinaryModule } from './modules/cloudinary/cloudinary.module';
 import entities from './common/typeorm/index';
 
 @Module({
@@ -21,7 +22,7 @@ import entities from './common/typeorm/index';
     entities: entities,
     synchronize: true,
     logging: true,
-  }), UserModule, DocumentsModule, CaseModule, AppointmentModule, ActivityModule],
+  }), UserModule, DocumentsModule, CaseModule, AppointmentModule, ActivityModule, CloudinaryModule],
   controllers: [AppController],
   providers: [AppService],
 })
