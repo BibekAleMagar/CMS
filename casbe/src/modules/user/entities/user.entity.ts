@@ -1,6 +1,6 @@
 import { CaseStatus } from "src/common/enums/case-status.enum";
 import { UserRole } from "src/common/enums/user-role.enum";
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { Case } from "src/modules/case/entities/case.entity";
 import { Appointment } from "src/modules/appointment/entities/appointment.entity";
 import { CaseDocument } from "src/modules/documents/entities/document.entity";
@@ -36,11 +36,11 @@ export class User {
     @Column({name: 'is_active', default: true})
     isActive: boolean;
 
-    @Column({name: 'created_at',})
-    createdAt: string
+    @CreateDateColumn({name: 'created_at', type: 'timestamp'})
+    createdAt: Date;
 
-    @Column({name: "updated_at"})
-    updatedAt: string;
+    @CreateDateColumn({name: "updated_at", type: 'timestamp'})
+    updatedAt: Date;
 
     @OneToMany(() => Case, (caseEntity) => caseEntity.lawyer)
     casesAsLawyer: Case[];

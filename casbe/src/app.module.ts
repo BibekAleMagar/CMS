@@ -11,9 +11,12 @@ import { ActivityModule } from './modules/activity/activity.module';
 import { CloudinaryModule } from './modules/cloudinary/cloudinary.module';
 import { AuthModule } from './modules/auth/auth.module';
 import entities from './common/typeorm/index';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
-  imports: [TypeOrmModule.forRoot({
+  imports: [
+    ConfigModule.forRoot({isGlobal: true}),
+    TypeOrmModule.forRoot({
     type: 'mysql',
     host: 'localhost',
     port: 3306,
