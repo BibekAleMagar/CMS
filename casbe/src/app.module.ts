@@ -25,7 +25,6 @@ import { ConfigModule } from '@nestjs/config';
     database: 'CMS',
     entities: entities,
     synchronize: true,
-    logging: true,
   }), UserModule, DocumentsModule, CaseModule, AppointmentModule, ActivityModule, CloudinaryModule, AuthModule],
   controllers: [AppController],
   providers: [AppService],
