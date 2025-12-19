@@ -1,0 +1,21 @@
+// const dummy_token = `eyJhbGciOiJSUzI1NiIsImtpZCI6IkQ3Q0M1MzUxREUyRjVFMUVDMzY1OTc2MTEzRTRFNTNBNDlBREQxQTYiLCJ4NXQiOiIxOHhUVWQ0dlhoN0RaWmRoRS1UbE9rbXQwYVkiLCJ0eXAiOiJhdCtqd3QifQ.eyJpc3MiOiJodHRwczovLzE5Mi4xNjguMS4xNzg6NDQzNTcvIiwiZXhwIjoxNzUzMDc1OTAzLCJpYXQiOjE3NTMwNzIzMDMsInNjb3BlIjoib2ZmbGluZV9hY2Nlc3MiLCJqdGkiOiI3NGQ5YjllNS1iYTQyLTRiMDctYWM4My1mMmUzMjVlNDlhM2QiLCJzdWIiOiI0M2E5MDE4NC1jZDJmLTQxMTMtOGRjMC0wYjQ3YThjMzg4NDEiLCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJzdXBlcmFkbWluIiwiZW1haWwiOiJzdXBlcmFkbWluQGRlbW8uY29tIiwicm9sZSI6ImFkbWluIiwicGhvbmVfbnVtYmVyX3ZlcmlmaWVkIjoiRmFsc2UiLCJlbWFpbF92ZXJpZmllZCI6IkZhbHNlIiwidW5pcXVlX25hbWUiOiJzdXBlcmFkbWluIiwib2lfcHJzdCI6IkR5bmFtaWNTaWZhcmlzX0FwcCIsIm9pX2F1X2lkIjoiZGQ4ODQwNmEtMzE5MS02Nzk5LThmMDUtM2ExYjNkNmQ1NmRjIiwiY2xpZW50X2lkIjoiRHluYW1pY1NpZmFyaXNfQXBwIiwib2lfdGtuX2lkIjoiMjhhYzA2ODctYWNhMi02OWU3LWU1OGUtM2ExYjNkNmQ1NmU1In0.41r3jrFZcGIM08rPC7Jtkt6BKItjB7BlMfjP5XRK_Oj2A5FYGWpv5mJzU8chBjjfTm55yfO25xM2OR8_aeWnCKs-6P2lW7RwJVA90-oiwQ6ytrqzJl0qcjJAyGN2F_QOCt7BJhPaKDnwx2cS4JFiJeWGleFV5qGMU4ntV9UwaMJJs5UYgwGBKBB_S7qB-OBlbCc2DVi5J0NhWW2HNz4KBUuQvMYdp5caNeVeb7JJNFUoGUiBmtLXhmJaheWYRjXnoQ4Vhw5HE_O_aavNqR8D86-tsIhe-558rce16KfiHh0nDVhEeOmKitoTxKIZpOPosunqfxwDjHdQUJiq_2xssw`;
+
+export interface JwtPayload {
+  iss: string;
+  exp: number;
+  iat: number;
+  scope: string;
+  jti: string;
+  sub: string;
+  preferred_username: string;
+  email: string;
+  role: string
+  phone_number_verified: "True" | "False";
+  email_verified: "True" | "False";
+  unique_name: string;
+  oi_prst: string;
+  oi_au_id: string;
+  client_id: string;
+  oi_tkn_id: string;
+  branchId: string;
+}
