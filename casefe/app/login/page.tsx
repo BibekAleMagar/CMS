@@ -12,6 +12,7 @@ import { useLogin } from "@/src/hooks/mutation/Login";
 import { useRouter } from "next/navigation";
 import { sweetAlert } from "@/src/lib/helper";
 import { AxiosError } from "axios";
+import { Label } from "@radix-ui/react-label";
 
 const Login: React.FC = () => {
   const form = useForm<LoginType>({
@@ -33,8 +34,8 @@ const Login: React.FC = () => {
         payload,
         successMessage: "login Succesful"
       });
-      if(res?.access_token){
-        sessionStorage.setItem("token", res.access_token)
+      if(res?.accessToken){
+        sessionStorage.setItem("token", res.accessToken)
         sweetAlert.success("Login Successful");
         router.push("/")
       }
@@ -72,19 +73,16 @@ const Login: React.FC = () => {
           </div>
 
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <div className="flex flex-col">
-              <Input name="email" type="email" placeholder="Email" label="Email" />
+              <Label className="text-black">Email</Label>
+              <Input name="email" type="email" placeholder="Email" className="text-black" />
             </div>
 
             <div className="flex flex-col">
-              <Input name="password" type="password" placeholder="Password" label="Password" className="" />
-              {/* <label className="mb-1 text-black font-medium">Password</label>
-              <input
-                type="password"
-                placeholder="Enter your password"
-                className="border border-gray-300 rounded-md px-4 py-3 focus:outline-none focus:ring-2 focus:ring-purple-400"
-              /> */}
+              <Label className="text-black">Password</Label>
+              <Input name="password" type="password" placeholder="Password" className="text-black"  />
+              
             </div>
 
             <Button

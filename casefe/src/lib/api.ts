@@ -18,7 +18,7 @@ const instance = axios.create({
 export const loginInstance = axios.create({
   baseURL: process.env.NEXT_PUBLIC_FILE_URL,
   headers: {
-    "Content-Type": "www-form-urlencoded",
+    "Content-Type": "application/json",
   },
 });
 
