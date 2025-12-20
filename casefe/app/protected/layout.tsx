@@ -4,6 +4,7 @@ import { AuthProvider } from "@/src/context/useAuth";
 import React from "react";
 export const dynamic = "force-dynamic"; // This is to ensure that the layout is not cachedimport { cookies } from "next/headers" // remove
 import { cookies } from "next/headers"; // remove
+import Navbar from "@/src/components/layout/Navbar";
 type Props = { children: React.ReactNode };
 
 const Layout = async ({ children }: Props) => {
@@ -18,7 +19,7 @@ const Layout = async ({ children }: Props) => {
           <div className="relative basis-full">
             <SidebarTrigger className="absolute top-2" size="lg" />
             <div className="flex flex-col ">
-              {/* <Navbar /> */}
+              <Navbar />
               <main className="p-3 pt-1 lg:p-6 lg:pt-1">{children}</main>
             </div>
           </div>
