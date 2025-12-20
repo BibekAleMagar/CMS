@@ -2,6 +2,9 @@
 import React from "react";
 import { Button } from "@/src/components/ui/button";
 import { Input } from "@/src/components/ui/input";
+import { Form } from "@/src/components/ui/form";
+import {useForm} from "react-hook-form"
+
 
 const Register: React.FC = () => {
   return (

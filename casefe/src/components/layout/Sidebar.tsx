@@ -21,7 +21,7 @@ export function CustomSidebar() {
       <SidebarHeader>
         <div className="py-4 justify-center flex items-center">
           <Image
-            src="/images/nepallogo.svg"
+            src="/logo.svg"
             alt="logo"
             height={80}
             width={80}
