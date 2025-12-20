@@ -30,7 +30,7 @@ export class User {
     @Column({nullable: true})
     phone: string;
 
-    @Column()
+    @Column({nullable: true})
     avatar: string;
 
     @Column({name: 'is_active', default: true})
