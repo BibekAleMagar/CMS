@@ -37,7 +37,7 @@ const Login: React.FC = () => {
       if(res?.accessToken){
         sessionStorage.setItem("token", res.accessToken)
         sweetAlert.success("Login Successful");
-        router.push("/")
+        router.push("/protected/dashboard")
       }
     }catch(error) {
       if(error instanceof AxiosError) {
