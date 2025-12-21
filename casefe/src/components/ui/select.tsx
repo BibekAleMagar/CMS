@@ -141,7 +141,7 @@ export function SelectElement<T extends FieldValues>({
           <Select onValueChange={field.onChange} value={field.value ?? ""}>
             <FormControl>
               <SelectTrigger>
-                <SelectValue placeholder={placeholder || "कृपया छान्नुहोस्"}  />
+                <SelectValue placeholder={placeholder || "Select a role"}  />
               </SelectTrigger>
             </FormControl>
             <SelectContent>
