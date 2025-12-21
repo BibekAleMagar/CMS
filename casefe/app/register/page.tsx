@@ -1,12 +1,68 @@
 // Register.tsx
+"use client"
 import React from "react";
 import { Button } from "@/src/components/ui/button";
 import { Input } from "@/src/components/ui/input";
 import { Form } from "@/src/components/ui/form";
 import {useForm} from "react-hook-form"
+import { Label } from "@/src/components/ui/label";
+import { SelectElement } from "@/src/components/ui/select";
+import { UserRole } from "@/src/types/enums/user-role.enum";
+import { object } from "zod";
+import { RegisterType } from "@/src/types/register";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { registerSchema } from "@/src/validators/register";
+import { useRegister } from "@/src/hooks/mutation/register";
+import { useRouter } from "next/navigation";
+import { AxiosError } from "axios";
+
+export const userRolesArray = Object.values(UserRole).map(role => ({
+  value: role,
+  label: role.replace("_", " ").toLowerCase().replace(/\b\w/g, c => c.toUpperCase()), // optional formatting
+}));
 
 
 const Register: React.FC = () => {
+  const router = useRouter()
+  const form = useForm<RegisterType>({
+    resolver: zodResolver(registerSchema),
+    values: {
+      email: "",
+      password: "",
+      firstName: "",
+      lastName: "",
+      role: UserRole.CLIENT,
+      phoneNumber: "",
+      avatar: undefined
+    }
+  })
+  const {mutateAsync, isPending} = useRegister()
+  const onSubmit = async(data: RegisterType) => {
+    try {
+      const res = await mutateAsync({
+        payload: data,
+        url: "/auth/register",
+        successMessage: "Registered Successfully"
+      });
+      router.push("/login")
+
+    } catch(error){
+ if (error instanceof AxiosError) {
+        const message =
+          error.response?.data?.error?.message ||
+          error.response?.data?.error_description ||
+          error.response?.data?.message ||
+          error?.message ||
+          "Unexpected error";
+        form.setError("root", { message });
+      } else if (error instanceof Error) {
+        form.setError("root", { message: error.message });
+      } else {
+        form.setError("root", { message: "Login failed" });
+      }
+    }
+    
+  }
   return (
     <div className="min-h-screen flex items-center justify-center px-4 bg-[url('/hero.jpeg')]">
 
@@ -16,7 +72,7 @@ const Register: React.FC = () => {
         <div className="hidden md:flex items-center justify-center bg-gray-100 p-8 bg-[url('/login.png')] bg-no-repeat bg-cover bg-center" />
 
         {/* Form Section */}
-        <div className="flex flex-col justify-center p-8">
+        <div className="flex flex-col justify-center p-8 bg-white">
           <div className="mb-8 text-center">
             <h1 className="text-2xl md:text-3xl font-bold text-black mb-2">
               Create Account
@@ -26,63 +82,55 @@ const Register: React.FC = () => {
             </p>
           </div>
 
-          <form className="space-y-4">
-            
-            {/* Full Name */}
-            <div className="flex flex-col">
-              <label className="mb-1 font-medium text-black">
-                Full Name
-              </label>
-              <input
-                type="text"
-                placeholder="Enter your full name"
-                className="border border-gray-300 rounded-md px-4 py-3 focus:outline-none focus:ring-2 focus:ring-purple-400"
-              />
-            </div>
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 text-black">
+              <div>
+                <Label>Email *</Label>
+                <Input<RegisterType> name="email" placeholder="johndoe@example.com" />
+              </div>
+              <div>
+                <Label>Password *</Label>
+                <Input<RegisterType> name="password" type="password" placeholder="********" />
+              </div>
+              <div>
+                <Label>FirstName *</Label>
+                <Input name="firstName" placeholder="John" />
+              </div>
+              <div>
+                <Label>LastName *</Label>
+                <Input<RegisterType> name="lastName" placeholder="Doe" />
+              </div>
+              <div>
+                <Label className="mb-2">Role *</Label>
+                <SelectElement<RegisterType> name="role" data={userRolesArray.map(role => ({
+                  label: role.label,
+                  value: role.value
+                }))} />
+              </div>
+              <div>
+                <Label>Phone Number *</Label>
+                <Input<RegisterType> name="phoneNumber" placeholder="98********" />
+              </div>
+              <div>
+                <Label>ProfileImage</Label>
+                <input name="avatar" className="text-black mt-2 p-1 text-sm rounded w-full border" type="File"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0]
+                    if(!file) return;
+                    form.setValue("avatar", file, {shouldValidate: true})
+                  }}
+                  accept="image/*"
+                />
+              </div>
+              <Button type="submit" className="w-full">Register </Button>
+               {form.formState.errors.root && (
+          <div className="text-sm text-red-500 text-center">
+            {form.formState.errors.root.message}
+          </div>
+        )}
+            </form>
 
-            {/* Email */}
-            <div className="flex flex-col">
-              <label className="mb-1 font-medium text-black">
-                Email
-              </label>
-              <input
-                type="email"
-                placeholder="Enter your email"
-                className="border border-gray-300 rounded-md px-4 py-3 focus:outline-none focus:ring-2 focus:ring-purple-400"
-              />
-            </div>
-
-            {/* Password */}
-            <div className="flex flex-col">
-              <label className="mb-1 font-medium text-black">
-                Password
-              </label>
-              <input
-                type="password"
-                placeholder="Create a password"
-                className="border border-gray-300 rounded-md px-4 py-3 focus:outline-none focus:ring-2 focus:ring-purple-400"
-              />
-            </div>
-
-            {/* Confirm Password */}
-            <div className="flex flex-col">
-              <label className="mb-1 font-medium text-black">
-                Confirm Password
-              </label>
-              <input
-                type="password"
-                placeholder="Confirm your password"
-                className="border border-gray-300 rounded-md px-4 py-3 focus:outline-none focus:ring-2 focus:ring-purple-400"
-              />
-            </div>
-
-            <button
-              type="submit"
-              className="w-full bg-purple-600 text-white font-semibold py-3 rounded-md hover:bg-purple-700 transition-colors"
-            >
-              Sign Up
-            </button>
-          </form>
+          </Form>
 
           <p className="mt-6 text-center text-gray-600">
             Already have an account?{" "}

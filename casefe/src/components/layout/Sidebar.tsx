@@ -11,9 +11,11 @@ import SidebarItem from "./SidebarItem";
 import { useAuth } from "@/src/context/useAuth";
 import { UserRole } from "@/src/types/enums/user-role.enum"; 
 import { SidebarDropdown } from "./SidebarDropdown";
+import { useUserById } from "@/src/hooks/query/user";
 
 export function CustomSidebar() {
   const { user } = useAuth();
+  const {data: userData} = useUserById(user?.sub ?? "")
   const activeClass = "bg-primary text-white !hover:bg-primary/90";
 
   return (
@@ -21,7 +23,7 @@ export function CustomSidebar() {
       <SidebarHeader>
         <div className="py-4 justify-center flex items-center">
           <Image
-            src="/logo.svg"
+            src={userData?.avatar ?? ""}
             alt="logo"
             height={80}
             width={80}

@@ -9,6 +9,7 @@ import {
 import { Button } from "@/src/components/ui/button";
 import { User } from "lucide-react";
 import { useAuth } from "@/src/context/useAuth";
+import Login from "../../../app/login/page";
 
 const UserActionDropDown = () => {
   const { user } = useAuth();
@@ -20,7 +21,7 @@ const UserActionDropDown = () => {
           <User /> {user?.email || "-"}
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="">
+      <DropdownMenuContent className="w-full">
         <div className="flex flex-col gap-1">
           {/* <UserNameUpdateDialog username={user || ""} setUser={setUser} /> */}
         </div>

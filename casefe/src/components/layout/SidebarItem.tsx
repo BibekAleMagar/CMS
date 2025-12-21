@@ -23,7 +23,6 @@ const CustomSidebarItem = ({
 }) => {
   const pathname = usePathname();
   const isActive = (url: string) => {
-    console.log(url);
     if (url === "/") {
       return pathname === "/";
     }

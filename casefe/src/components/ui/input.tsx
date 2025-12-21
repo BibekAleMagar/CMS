@@ -140,9 +140,9 @@ const Input = <TFieldValues extends FieldValues>({
                     tabIndex={-1}
                   >
                     {showPassword ? (
-                      <EyeOff className="h-4 w-4" />
+                      <EyeOff className="h-4 w-4 cursor-pointer hover:text-black" />
                     ) : (
-                      <Eye className="h-4 w-4" />
+                      <Eye className="h-4 w-4 cursor-pointer hover:text-black" />
                     )}
                   </button>
                 )}
