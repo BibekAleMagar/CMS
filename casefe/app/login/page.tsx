@@ -84,10 +84,15 @@ const Login: React.FC = () => {
               <Input name="password" type="password" placeholder="Password" className="text-black"  />
               
             </div>
+            {form.formState.errors.root && (
+          <div className="text-sm text-red-500 text-center">
+            {form.formState.errors.root.message}
+          </div>
+        )}
 
             <Button
               type="submit"
-              className="w-full bg-purple-600 text-white font-semibold py-3 rounded-md hover:bg-purple-700 transition-colors"
+              className="cursor-pointer w-full bg-purple-600 text-white font-semibold py-3 rounded-md hover:bg-purple-700 transition-colors"
             >
               Sign In
             </Button>

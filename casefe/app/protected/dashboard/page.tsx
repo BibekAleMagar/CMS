@@ -1,10 +1,12 @@
 "use client";
 
 import { useAuth } from "@/src/context/useAuth";
+import { useUserById } from "@/src/hooks/query/user";
 
 
  const Dashboard = () => {
     const {user} = useAuth()
+    const {data: userData} = useUserById(user?.sub ?? undefined);
 
     return (
         <>
