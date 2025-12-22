@@ -1,26 +1,40 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { CaseDocument } from './entities/document.entity';
+import { CloudinaryService } from '../cloudinary/cloudinary.service';
+import { User } from '../user/entities/user.entity';
 import { CreateDocumentDto } from './dto/create-document.dto';
-import { UpdateDocumentDto } from './dto/update-document.dto';
 
 @Injectable()
 export class DocumentsService {
-  create(createDocumentDto: CreateDocumentDto) {
-    return 'This action adds a new document';
-  }
+  constructor(
+    @InjectRepository(CaseDocument)
+    private documentRepository: Repository<CaseDocument>,
+    private cloudinaryService: CloudinaryService,
 
-  findAll() {
-    return `This action returns all documents`;
-  }
+  ) {}
 
-  findOne(id: number) {
-    return `This action returns a #${id} document`;
-  }
+  async uploadDocument(
+    file: Express.Multer.File,
+    uploadDocumentDto: CreateDocumentDto,
+    currentUser: User
+  ): Promise<CaseDocument> {
+    const uploadResult = await this.cloudinaryService.uploadFile(file, "legad-documents")
 
-  update(id: number, updateDocumentDto: UpdateDocumentDto) {
-    return `This action updates a #${id} document`;
-  }
+    const document = this.documentRepository.create({
+      caseId: uploadDocumentDto.caseId,
+      uploadedBy: currentUser.id,
+      fileName: file.originalname,
+      filePath: uploadResult.secure_url,
+      publicId: uploadResult.public_id,
+      fileType: file.mimetype,
+      fileSize: file.size,
+      description: uploadDocumentDto.description
+    })
 
-  remove(id: number) {
-    return `This action removes a #${id} document`;
+    const saved = await this.documentRepository.save(document);
+
+    return saved;
   }
 }
