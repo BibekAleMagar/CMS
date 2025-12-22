@@ -1,4 +1,4 @@
-import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { CaseStatus } from "src/common/enums/case-status.enum";
 import { User } from "src/modules/user/entities/user.entity";
 import { Appointment } from "src/modules/appointment/entities/appointment.entity";
@@ -35,10 +35,10 @@ export class Case {
     @Column({type: "datetime", nullable: true, name: "next_hearing"})
     nextHearing: Date;
 
-    @Column({name: "created_at"})
+    @CreateDateColumn({name: "created_at", type: "timestamp"})
     createdAt: Date;
 
-    @Column({name: "updated_at"})
+    @CreateDateColumn({name: "updated_at", type: "timestamp"})
     updatedAt: Date;    
 
     @ManyToOne(() => User, (user) => user.casesAsLawyer)
