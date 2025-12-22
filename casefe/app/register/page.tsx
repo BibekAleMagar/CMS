@@ -122,7 +122,7 @@ const Register: React.FC = () => {
                   accept="image/*"
                 />
               </div>
-              <Button type="submit" className="w-full">Register </Button>
+              <Button type="submit" disabled={isPending} className="w-full">Register </Button>
                {form.formState.errors.root && (
           <div className="text-sm text-red-500 text-center">
             {form.formState.errors.root.message}
