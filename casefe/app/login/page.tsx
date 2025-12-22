@@ -91,6 +91,7 @@ const Login: React.FC = () => {
         )}
 
             <Button
+            disabled={isPending}
               type="submit"
               className="cursor-pointer w-full bg-purple-600 text-white font-semibold py-3 rounded-md hover:bg-purple-700 transition-colors"
             >
