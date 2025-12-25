@@ -20,8 +20,8 @@ export class Case {
     @Column({type: "enum", enum: CaseStatus, default: CaseStatus.PENDING})
     status: CaseStatus;
 
-    @Column({name: "lawyer_id"})
-    lawyerId: number;
+    @Column({name: "lawyer_id", nullable: true})
+    lawyerId?: number;
     
     @Column({name: "client_id"})
     clientId: number;

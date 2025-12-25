@@ -16,7 +16,7 @@ import { ApiConsumes } from '@nestjs/swagger';
 export class CaseController {
   constructor(private readonly caseService: CaseService) {}
   @Post()
-  @Roles(UserRole.SUPER_ADMIN, UserRole.LAWYER)
+  @Roles(UserRole.SUPER_ADMIN, UserRole.LAWYER, UserRole.CLIENT)
   create(@Body() createCaseDto: CreateCaseDto, @CurrentUser() user:User) {
     return this.caseService.create(createCaseDto, user as any)
   }

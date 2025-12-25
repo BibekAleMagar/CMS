@@ -8,6 +8,7 @@ import { User } from '../user/entities/user.entity';
 import { UserRole } from 'src/common/enums/user-role.enum';
 import { v2 as cloudinary } from 'cloudinary';
 import { error } from 'console';
+import { CaseStatus } from 'src/common/enums/case-status.enum';
 
 
 
@@ -20,24 +21,31 @@ export class CaseService {
   private userRepository: Repository<User>
  ) {}
 
-async create(createCaseDto: CreateCaseDto, updateCaseDto: UpdateCaseDto): Promise<Case> {
-  const caseNumber= await this.generateCaseNumber();
+async create(createCaseDto: CreateCaseDto, user: User): Promise<Case> {
+  const caseNumber = await this.generateCaseNumber();
 
   const newCase = this.caseRepository.create({
-    ...createCaseDto,
+    title: createCaseDto.title,
+    court: createCaseDto.court,
+    status: createCaseDto.status ?? CaseStatus.PENDING,
     caseNumber,
+  });
 
-  })
+  if (user.role === UserRole.CLIENT) {
+    newCase.clientId = user.id;
+  }
 
-  const savedCase = await this.caseRepository.save(newCase);
+  if (user.role === UserRole.LAWYER) {
+    newCase.lawyerId = user.id;
+  }
 
-  return this.findOne(savedCase.id)
-  
+  return this.caseRepository.save(newCase);
 }
+
 
 async findAll (user: User) : Promise<Case[]> {
   let query = this.caseRepository
-  .createQueryBuilder('cases')
+  .createQueryBuilder('case')
   .leftJoinAndSelect('case.lawyer', 'lawyer')
   .leftJoinAndSelect('case.client', 'client')
 
@@ -54,7 +62,7 @@ async findAll (user: User) : Promise<Case[]> {
 async findOne(id: number): Promise<Case> {
   const caseEntity = await this.caseRepository.findOne({
     where: {id},
-    relations: ["lawyer","clients", "documents", "appointments"]
+    relations: ["lawyer","client", "documents", "appointments"]
   })
 
   if(!caseEntity) throw new NotFoundException("Case not found")

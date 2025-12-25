@@ -15,9 +15,13 @@ export class CreateCaseDto {
     description?: string;
 
     @IsNumber()
-    @IsNotEmpty()
+    @IsOptional()
     @ApiProperty({example: "lawyerID"})
-    lawyerId: number;
+    lawyerId?: number;
+
+    @IsOptional()
+    @IsEnum(CaseStatus)
+    status?: CaseStatus;
 
     @IsNumber()
     @IsNotEmpty()
@@ -35,5 +39,7 @@ export class CreateCaseDto {
 
     @IsDateString()
     @IsOptional()
-    nextHearingDate: Date;
+    nextHearingDate?: Date;
+
+
 }
