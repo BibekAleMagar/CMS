@@ -27,7 +27,7 @@ export function CustomSidebar() {
             alt="logo"
             height={80}
             width={80}
-            className="w-24 h-24"
+            className="h-20 w-20 object-cover"
           />
         </div>
         <hr />
