@@ -7,3 +7,12 @@ export const useCase = () => {
         queryKey: ["case"]
     })
 }
+
+
+export const useCaseById = (id: number) => {
+    return useFetch<GetCaseDto>(`/case/${id}`,{
+        queryKey: ["caseById"]
+    }
+        
+    )
+}

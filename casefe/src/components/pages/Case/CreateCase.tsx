@@ -11,7 +11,7 @@ import { useAuth } from "@/src/context/useAuth"
 import { useCreateCase } from "@/src/hooks/mutation/case";
 import { useState } from "react";
 import { Button } from "../../ui/button";
-import { Form } from "../../ui/form";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../../ui/form";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CreateCaseDto } from "@/src/types/Case";
@@ -32,7 +32,9 @@ export const CreateCaseDialog = () => {
             lawyerId: undefined,
             court: ""
         },
+
         resolver:zodResolver(createCaseSchema)
+        
     })
     const onSubmit = (data: CreateCaseDto) => {
         mutateAsync({
@@ -61,8 +63,22 @@ export const CreateCaseDialog = () => {
                                 <Input name="court" placeholder="Enter court name" label="Court Name" />
                             </div>
                              <div className="space-y-2 my-4">
-                                <Label>Description</Label>
-                                <Textarea name="description" placeholder="Short Description about your case"  />
+                                  <FormField
+                                    control={form.control}
+                                    name="description"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                        <FormLabel>Description</FormLabel>
+                                        <FormControl>
+                                            <Textarea
+                                            placeholder="Short description about your case"
+                                            {...field}
+                                            />
+                                        </FormControl>
+                                        <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
                             </div>
                             <Button type="submit" className="cursor-pointer" disabled={isPending}>{isPending? "Creating ..." : "Create"}</Button>
                         </form>
