@@ -27,8 +27,8 @@ export class CaseController {
   }
 
   @Get(":id")
-  findOne(@Param("id") id:string) {
-    return this.caseService.findOne(+id)
+  findOne(@Param("id") id:string, @CurrentUser() user: User) {
+    return this.caseService.findOne(+id, user)
   }
 
   @Delete(':id')
