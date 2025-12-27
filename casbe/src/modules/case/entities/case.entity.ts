@@ -1,4 +1,4 @@
-import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { CaseStatus } from "src/common/enums/case-status.enum";
 import { User } from "src/modules/user/entities/user.entity";
 import { Appointment } from "src/modules/appointment/entities/appointment.entity";
@@ -13,6 +13,23 @@ export class Case {
 
     @Column({unique: true, name: "case_number"})
     caseNumber: string;
+
+    @Column({ type: 'text', nullable: true })
+    description?: string;
+
+    @Column({
+    type: "enum",
+    enum: ["CRIMINAL", "CIVIL", "FAMILY", "CORPORATE", "LABOUR", "PROPERTY"],
+    name: "case_type"
+    })
+    caseType: string;
+
+    @Column({
+    type: "varchar",
+    name: "case_subtype",
+    nullable: true
+    })
+    caseSubType: string; 
 
     @Column({name: "title"})
     title: string;
@@ -38,7 +55,7 @@ export class Case {
     @CreateDateColumn({name: "created_at", type: "timestamp"})
     createdAt: Date;
 
-    @CreateDateColumn({name: "updated_at", type: "timestamp"})
+    @UpdateDateColumn({name: "updated_at", type: "timestamp"})
     updatedAt: Date;    
 
     @ManyToOne(() => User, (user) => user.casesAsLawyer)

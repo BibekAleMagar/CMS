@@ -2,17 +2,20 @@ import {z} from 'zod';
 import { createCaseSchema } from '../validators/case';
 import { CaseStatus } from './enums/case-status.enum';
 export type GetCaseDto = {
-    id: number;
+  id: number;
   caseNumber: string;
+  description : string | null;
   title: string;
-  status: CaseStatus; // adjust based on backend enum
+  status: CaseStatus; 
   lawyerId: number | null;
   clientId: number;
   court: string;
-  filingDate: string | null;     // ISO date string or null
-  nextHearing: string | null;    // ISO date string or null
-  createdAt: string;             // ISO date string
+  filingDate: string | null;     
+  nextHearing: string | null;    
+  createdAt: string;             
   updatedAt: string;         
 }
+
+
 
 export type CreateCaseDto = z.infer<typeof createCaseSchema>
