@@ -34,4 +34,10 @@ export class DocumentsController {
     return this.documentsService.uploadDocument(file, uploadDocumentDto, user)
   }
 
+  @Get("case/:caseId")
+  @Roles(UserRole.CLIENT, UserRole.LAWYER)
+  findByCaseId(@Param('caseIdd') CaseId:string) {
+    return this.documentsService.findByCaseId(+CaseId)
+  }
+
 }
