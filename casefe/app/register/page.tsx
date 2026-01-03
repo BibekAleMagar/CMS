@@ -1,4 +1,3 @@
-// Register.tsx
 "use client"
 import React from "react";
 import { Button } from "@/src/components/ui/button";
@@ -16,7 +15,7 @@ import { useRegister } from "@/src/hooks/mutation/register";
 import { useRouter } from "next/navigation";
 import { AxiosError } from "axios";
 
-export const userRolesArray = Object.values(UserRole).map(role => ({
+const userRolesArray = Object.values(UserRole).map(role => ({
   value: role,
   label: role.replace("_", " ").toLowerCase().replace(/\b\w/g, c => c.toUpperCase()), // optional formatting
 }));
