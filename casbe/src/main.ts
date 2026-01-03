@@ -4,10 +4,14 @@ import { DocumentBuilder } from '@nestjs/swagger/dist/document-builder';
 import { SwaggerModule } from '@nestjs/swagger/dist/swagger-module';
 import { DataSource } from 'typeorm';
 import { createSuperAdmin } from './seed/superAdmin.seed';
+import { ConfigService } from '@nestjs/config';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-
+  const configService = app.get(ConfigService)
+  console.log('Database Configuration:');
+  console.log('  DB_HOST:', configService.get('DB_HOST'));
+  console.log("NODE_ENV = ", process.env.NODE_ENV)
   app.enableCors({
     origin: "*",
     methods: ['GET', 'POST', 'PATCH', 'PUT', 'DELETE', 'OPTIONS'],

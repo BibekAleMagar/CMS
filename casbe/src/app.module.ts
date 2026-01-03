@@ -10,22 +10,17 @@ import { AppointmentModule } from './modules/appointment/appointment.module';
 import { ActivityModule } from './modules/activity/activity.module';
 import { CloudinaryModule } from './modules/cloudinary/cloudinary.module';
 import { AuthModule } from './modules/auth/auth.module';
-import entities from './common/typeorm/index';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { getTypeOrmConfig } from './config/typeorm.config';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({isGlobal: true}),
-    TypeOrmModule.forRoot({
-    type: 'mysql',
-    host: 'localhost',
-    port: 3306,
-    username: 'kendrix',
-    password: 'kendrix',
-    database: 'CMS',
-    entities: entities,
-    synchronize: true,
-  }), UserModule, DocumentsModule, CaseModule, AppointmentModule, ActivityModule, CloudinaryModule, AuthModule],
+    ConfigModule.forRoot({isGlobal: true, envFilePath: `.env.${process.env.NODE_ENV || 'development'}`}),
+    TypeOrmModule.forRootAsync({
+      useFactory: (configService: ConfigService) => getTypeOrmConfig(configService),
+      inject: [ConfigService]
+    }),
+    UserModule, DocumentsModule, CaseModule, AppointmentModule, ActivityModule, CloudinaryModule, AuthModule],
   controllers: [AppController],
   providers: [AppService],
 })

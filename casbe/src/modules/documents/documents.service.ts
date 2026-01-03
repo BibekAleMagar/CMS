@@ -37,4 +37,12 @@ export class DocumentsService {
 
     return saved;
   }
+
+  async findByCaseId (caseId: number) { 
+    return this.documentRepository.find({
+      where: {caseId},
+      relations: ['uploader'],
+      order: {createdAt: "DESC"}
+    })
+  }
 }
