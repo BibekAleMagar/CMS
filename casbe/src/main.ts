@@ -6,29 +6,28 @@ import { DataSource } from 'typeorm';
 import { createSuperAdmin } from './seed/superAdmin.seed';
 import { ConfigService } from '@nestjs/config';
 
-// ... your imports stay the same ...
-
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  
-  const configService = app.get(ConfigService);
+  const configService = app.get(ConfigService)
+  console.log('Database Configuration:');
+  console.log('  DB_HOST:', configService.get('DB_HOST'));
+  console.log("NODE_ENV = ", process.env.NODE_ENV)
   app.enableCors({
     origin: "*",
     methods: ['GET', 'POST', 'PATCH', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: "*",
-  });
-
+  })
+  const dataSource = app.get(DataSource);
   const config = new DocumentBuilder()
     .setTitle('API')
     .setVersion('1.0')
     .build();
+
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup("api", app, document);
 
-  // MINIMAL CHANGE HERE:
-  await app.init();
-  return app.getHttpAdapter().getInstance();
-}
 
-// Export for Vercel
-export default bootstrap();
+
+  await app.listen(process.env.PORT ?? 3001);
+}
+bootstrap();
