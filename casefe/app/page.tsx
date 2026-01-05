@@ -8,12 +8,14 @@ import StatsSection from "@/src/components/userlayout/stats";
 export default function Home() {
   return (
    <>
-    <Hero />
+    <div className="bg-white">
+      <Hero />
     <Header />
     <FeaturesSection />
     <StatsSection />
     <HowItWorksSection />
     <Footer />
+    </div>
    </>
   );
 }

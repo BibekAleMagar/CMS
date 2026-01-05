@@ -22,9 +22,9 @@ const LogoutDialog = () => {
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
-        <Button>Logout</Button>
+        <Button className="cursor-pointer">Logout</Button>
       </AlertDialogTrigger>
-      <AlertDialogContent>
+      <AlertDialogContent className="bg-white text-black">
         <AlertDialogHeader>
           <AlertDialogTitle>Logout?</AlertDialogTitle>
           <AlertDialogDescription>
@@ -32,8 +32,8 @@ const LogoutDialog = () => {
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction onClick={handleLogout}>Confirm</AlertDialogAction>
+          <AlertDialogCancel className="bg-white cursor-pointer">Cancel</AlertDialogCancel>
+          <AlertDialogAction onClick={handleLogout} className="cursor-pointer">Confirm</AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>

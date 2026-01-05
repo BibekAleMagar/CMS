@@ -15,13 +15,13 @@ import { useUserById } from "@/src/hooks/query/user";
 
 export function CustomSidebar() {
   const { user } = useAuth();
-  const {data: userData} = useUserById(user?.sub ?? "")
+  // const {data: userData} = useUserById(user?.sub ?? "")
   const activeClass = "bg-primary text-white !hover:bg-primary/90";
 
   return (
     <Sidebar collapsible="icon" variant="sidebar">
       <SidebarHeader>
-        <div className="py-4 justify-center flex items-center">
+        {/* <div className="py-4 justify-center flex items-center">
           <Image
             src={userData?.avatar ?? ""}
             alt="logo"
@@ -29,7 +29,7 @@ export function CustomSidebar() {
             width={80}
             className="h-20 w-20 object-cover"
           />
-        </div>
+        </div> */}
         <hr />
       </SidebarHeader>
       <SidebarContent>

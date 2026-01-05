@@ -15,7 +15,7 @@ export type SidebarItemsType = {
 export const sidebarItems: SidebarItemsType[] = [
     {
         title: "Dashboard",
-        url: "dashboard",
+        url: "/protected/dashboard",
         roles: [UserRole.CLIENT, UserRole.LAWYER, UserRole.SUPER_ADMIN],
         icon: LayoutDashboard
     },
