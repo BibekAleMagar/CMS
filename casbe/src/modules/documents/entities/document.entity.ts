@@ -1,6 +1,6 @@
 import { User } from "src/modules/user/entities/user.entity";
 import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
-
+import { Case } from "src/modules/case/entities/case.entity";
 
 @Entity('case_documents')
 export class CaseDocument {
@@ -34,6 +34,12 @@ export class CaseDocument {
 
     @Column({name: "created_at", type: "timestamp", default: () => "CURRENT_TIMESTAMP"})
     createdAt: Date;
+
+      @ManyToOne(() => Case, (caseEntity) => caseEntity.documents, {
+    onDelete: 'CASCADE',
+  })
+  @JoinColumn({ name: 'case_id' })   
+  case: Case;
 
     @ManyToOne(() => User, (user) => user.documents)
     @JoinColumn({name: 'uploaded_by'})

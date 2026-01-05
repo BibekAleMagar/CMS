@@ -3,7 +3,7 @@ import { CaseStatus } from "src/common/enums/case-status.enum";
 import { User } from "src/modules/user/entities/user.entity";
 import { Appointment } from "src/modules/appointment/entities/appointment.entity";
 import { ActivityLog } from "src/modules/activity/entities/activity.entity";
-
+import { CaseDocument } from "src/modules/documents/entities/document.entity";
 @Entity('cases')
 export class Case {
 
@@ -72,7 +72,8 @@ export class Case {
      @OneToMany(() => ActivityLog, (log) => log.case)
     activityLogs: ActivityLog[];
 
-    
+    @OneToMany(() => CaseDocument, (document) => document.case)
+    documents: CaseDocument[]
 
 
 }

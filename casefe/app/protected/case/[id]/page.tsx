@@ -8,6 +8,8 @@ import {
   FileText,
   Clock,
   ShieldCheck,
+  Briefcase,
+  Car,
 } from "lucide-react";
 import Link from "next/link";
 
@@ -16,6 +18,8 @@ import { Badge } from "@/src/components/ui/badge";
 import {
   Card,
   CardContent,
+  CardHeader,
+  CardTitle,
 } from "@/src/components/ui/card";
 import {
   Accordion,
@@ -25,6 +29,7 @@ import {
 } from "@/src/components/ui/accordion";
 import { useCaseById } from "@/src/hooks/query/case";
 import BackButton from "@/src/common/BackButton";
+import { AddDocumentDialog } from "@/src/components/pages/documents/CreateDocument";
 
 const CaseDetails = () => {
   const params = useParams();
@@ -34,7 +39,7 @@ const CaseDetails = () => {
   if (!data) return null;
 
   return (
-    <div className=" space-y-8 lg:max-w-5xl">
+    <div className=" space-y-8 lg:max-w-5xl text-black">
       <div className="flex items-center gap-4">
         <BackButton />
         <div>
@@ -48,40 +53,45 @@ const CaseDetails = () => {
       </div>
 
       <Card className="border shadow-sm">
-        <CardContent className="flex flex-wrap items-center gap-6">
-          <Badge className="flex items-center gap-2 px-4 py-2 text-sm">
-            <ShieldCheck className="h-4 w-4" />
-            {data.status}
-          </Badge>
+        <CardContent className="flex justify-between items-center">
+          <div className="flex flex-wrap items-center gap-6">
+            <Badge className="flex items-center gap-2 px-4 py-2 text-sm">
+              <ShieldCheck className="h-4 w-4" />
+              {data.status}
+            </Badge>
 
-          <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            <Calendar className="h-4 w-4" />
-            {new Date(data.createdAt).toLocaleDateString()}
-          </div>
-
-          {data.court && (
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
-              <Gavel className="h-4 w-4" />
-              {data.court}
+              <Calendar className="h-4 w-4" />
+              {new Date(data.createdAt).toLocaleDateString()}
             </div>
-          )}
+
+            {data.court && (
+              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                <Gavel className="h-4 w-4" />
+                {data.court}
+              </div>
+            )}
+          </div>
+          <AddDocumentDialog />
         </CardContent>
       </Card>
 
       <Accordion type="single" collapsible className="lg:max-w-5xl">
         <AccordionItem value="case-info">
-          <AccordionTrigger className="px-2 cursor-pointer border shadow-md">
+          <AccordionTrigger className="px-2 cursor-pointer border ">
             <div className="flex items-center gap-2">
               <div className="flex items-center  bg-blue-100 p-2 rounded-md">
-              <FileText className="text-red-600" size={20} />
-            </div>
-            <p className="md:text-md lg:text-lg  font-semibold no-underline">Case Information</p>
+                <FileText className="text-red-600" size={20} />
+              </div>
+              <p className="md:text-md lg:text-lg  font-semibold no-underline">
+                Case Information
+              </p>
             </div>
           </AccordionTrigger>
 
           <AccordionContent>
             <Card className="border shadow-sm">
-              <CardContent className="space-y-6 pt-6">
+              <CardContent className="p-4">
                 {data.description && (
                   <div className="rounded-lg bg-muted/50 p-4">
                     <p className="text-sm font-medium text-muted-foreground mb-1">
@@ -122,6 +132,69 @@ const CaseDetails = () => {
           </AccordionContent>
         </AccordionItem>
       </Accordion>
+
+     <Accordion type="single" collapsible className="lg:max-w-5xl">
+  <AccordionItem value="case-info">
+    <AccordionTrigger className="px-2 cursor-pointer border">
+      <div className="flex items-center gap-2">
+        <div className="flex items-center bg-blue-100 p-2 rounded-md">
+          <Briefcase className="text-red-600" size={20} />
+        </div>
+        <p className="md:text-md lg:text-lg font-semibold no-underline">
+          Case Documents
+        </p>
+      </div>
+    </AccordionTrigger>
+
+<AccordionContent className="border rounded-md p-4">
+  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    {data?.documents?.map((document) => {
+      const ext = document.fileName.split('.').pop()?.toLowerCase();
+
+      // Build inline URL for PDFs - replace /raw/upload/ with /image/upload/ and add flags
+      const pdfUrl = ext === 'pdf'
+        ? document.filePath.replace('/raw/upload/', '/image/upload/fl_attachment:inline/')
+        : '';
+
+      return (
+        <Card
+          key={document.id}
+          className="overflow-hidden rounded-md shadow cursor-pointer hover:shadow-lg transition"
+          onClick={() => window.open(document.filePath, '_blank')}
+        >
+          <CardHeader className="flex flex-col gap-2 p-2">
+            {ext === 'pdf' ? (
+              <iframe
+                src={pdfUrl}
+                className="w-full h-64 border rounded pointer-events-none"
+                title={document.fileName}
+              />
+            ) : ext === 'doc' || ext === 'docx' ? (
+              <iframe
+                src={`https://docs.google.com/gview?url=${encodeURIComponent(document.filePath)}&embedded=true`}
+                className="w-full h-64 border rounded pointer-events-none"
+                title={document.fileName}
+              />
+            ) : (
+              <img
+                src={document.filePath}
+                alt={document.fileName}
+                className="w-full h-64 object-contain rounded pointer-events-none"
+              />
+            )}
+
+            <CardTitle className="mt-2 break-words">{document.fileName}</CardTitle>
+          </CardHeader>
+        </Card>
+      );
+    })}
+  </div>
+</AccordionContent>
+
+
+  </AccordionItem>
+</Accordion>
+
     </div>
   );
 };
@@ -140,16 +213,14 @@ const InfoItem = ({
   bg: string;
 }) => (
   <div className="flex items-start gap-4 rounded-xl border p-4">
-    <div className={`flex h-10 w-10 items-center justify-center rounded-lg ${bg}`}>
+    <div
+      className={`flex h-10 w-10 items-center justify-center rounded-lg ${bg}`}
+    >
       {icon}
     </div>
     <div>
-      <p className="text-sm font-medium text-muted-foreground">
-        {label}
-      </p>
-      <p className="text-sm font-semibold">
-        {value}
-      </p>
+      <p className="text-sm font-medium text-muted-foreground">{label}</p>
+      <p className="text-sm font-semibold">{value}</p>
     </div>
   </div>
 );

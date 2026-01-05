@@ -41,7 +41,7 @@ export function FeaturesSection() {
     <section id="features" className="py-24 px-4 sm:px-6 lg:px-8 bg-muted/30">
       <div className="container mx-auto">
         <div className="max-w-3xl mx-auto text-center mb-16">
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground mb-4 text-balance">
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-black mb-4 text-balance">
             Everything you need to manage cases efficiently
           </h2>
           <p className="text-lg text-muted-foreground text-pretty leading-relaxed">

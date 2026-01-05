@@ -1,6 +1,7 @@
 import {z} from 'zod';
 import { createCaseSchema } from '../validators/case';
 import { CaseStatus } from './enums/case-status.enum';
+import { CaseDocumentResponse } from './document';
 export type GetCaseDto = {
   id: number;
   caseNumber: string;
@@ -13,7 +14,8 @@ export type GetCaseDto = {
   filingDate: string | null;     
   nextHearing: string | null;    
   createdAt: string;             
-  updatedAt: string;         
+  updatedAt: string; 
+  documents: CaseDocumentResponse[]
 }
 
 

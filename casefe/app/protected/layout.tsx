@@ -16,7 +16,7 @@ const Layout = async ({ children }: Props) => {
     <SidebarProvider defaultOpen={isSidebarOpen}>
       <AuthProvider>
           <CustomSidebar />
-          <div className="relative basis-full">
+          <div className="relative basis-full bg-white">
             <SidebarTrigger className="absolute top-2" size="lg" />
             <div className="flex flex-col ">
               <Navbar />

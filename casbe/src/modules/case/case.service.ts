@@ -52,7 +52,7 @@ export class CaseService {
     try {
       const caseEntity = await this.caseRepository.findOne({
         where: { id },
-        relations: ['lawyer', 'client', 'appointments', 'activityLogs'],
+        relations: ['lawyer', 'client', 'appointments',"documents", 'activityLogs'],
       });
 
       if (!caseEntity) throw new NotFoundException('Case not found');

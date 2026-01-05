@@ -17,11 +17,11 @@ const UserActionDropDown = () => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="outline">
+        <Button variant="outline" className="bg-white text-black cursor-pointer">
           <User /> {user?.email || "-"}
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-full">
+      <DropdownMenuContent className="">
         <div className="flex flex-col gap-1">
           {/* <UserNameUpdateDialog username={user || ""} setUser={setUser} /> */}
         </div>
