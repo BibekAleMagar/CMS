@@ -7,17 +7,15 @@ import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
 export class UserService {
- constructor(
-  @InjectRepository(User)
-  private userRepository: Repository<User>
+  constructor(
+    @InjectRepository(User)
+    private userRepository: Repository<User>,
+  ) {}
 
-) {}
-
-
-async findOne(id:number): Promise<User> {
-  const user = await this.userRepository.findOne({
-    where: {id},
-    select: [
+  async findOne(id: number): Promise<User> {
+    const user = await this.userRepository.findOne({
+      where: { id },
+      select: [
         'id',
         'email',
         'firstName',
@@ -28,13 +26,34 @@ async findOne(id:number): Promise<User> {
         'isActive',
         'createdAt',
         'updatedAt',
-    ]
-  });
-  if(!user) {
-    throw new NotFoundException("User not found")
+      ],
+    });
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    if (user.role === 'LAWYER') {
+      const lawyerWithProfile = await this.userRepository.findOne({
+        where: { id },
+        select: [
+          'id',
+          'email',
+          'firstName',
+          'lastName',
+          'role',
+          'phone',
+          'avatar',
+          'isActive',
+          'createdAt',
+          'updatedAt',
+        ],
+        relations: ['lawyerProfile'],
+      });
+      if (!lawyerWithProfile) {
+        throw new NotFoundException('Lawyer not found');
+      }
+      return lawyerWithProfile;
+    }
+    return user;
   }
-  return user;
-};
-
 }
-

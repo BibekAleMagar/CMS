@@ -1,11 +1,11 @@
 import { CaseStatus } from "src/common/enums/case-status.enum";
 import { UserRole } from "src/common/enums/user-role.enum";
-import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Case } from "src/modules/case/entities/case.entity";
 import { Appointment } from "src/modules/appointment/entities/appointment.entity";
 import { CaseDocument } from "src/modules/documents/entities/document.entity";
 import { ActivityLog } from "src/modules/activity/entities/activity.entity";
-
+import { LawyerProfile } from "./lawyer-profile.entity";
 @Entity('users')
 export class User {
 
@@ -33,25 +33,8 @@ export class User {
     @Column({nullable: true})
     avatar: string;
 
-    // // lawwyer Sepcific
-    //  @Column({
-    // type: 'string',
-    // array: true,
-    // nullable: true
-    // })
-    // specializations?: string[];
-
-    // @Column({ nullable: true })
-    // experienceYears?: number;
-
-    // @Column({ type: 'float', default: 0 })
-    // successRate?: number;
-
-    // @Column({ default: 0 })
-    // activeCasesCount?: number;
-
-    // @Column({ default: true })
-    // available?: boolean;
+    @OneToOne(() => LawyerProfile, (profile) => profile.user, {cascade: true})
+    lawyerProfile: LawyerProfile
 
     @Column({name: 'is_active', default: true})
     isActive: boolean;
