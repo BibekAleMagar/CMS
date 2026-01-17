@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException, ConflictException } from '@nestjs/common';
+import { Injectable, UnauthorizedException, ConflictException, BadRequestException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/modules/user/entities/user.entity';
@@ -7,6 +7,8 @@ import * as bcrypt from 'bcryptjs';
 import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register.dto';
 import { v2 as cloudinary } from 'cloudinary';
+import { UserRole } from 'src/common/enums/user-role.enum';
+import { LawyerProfile } from '../user/entities/lawyer-profile.entity';
 
 @Injectable()
 export class AuthService {
@@ -20,6 +22,12 @@ export class AuthService {
     const existingUser = await this.userRepository.findOne({where: {email: registerDto.email}})
     if(existingUser) {
       throw new ConflictException("Email already in use");
+    }
+
+    if(registerDto.role === UserRole.LAWYER) {
+      if(!registerDto.specializations || !registerDto.experience) {
+        throw new BadRequestException("Lawyer registration requires specializations and experience")
+      }
     }
 
     let avatarUrl = "https://imgs.search.brave.com/YKx8-3qRmkv9oeoZmSugrki_AFZEH0qd_t7Qdu649jw/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9pbWcu/ZnJlZXBpay5jb20v/ZnJlZS12ZWN0b3Iv/Ymx1ZS1jaXJjbGUt/d2l0aC13aGl0ZS11/c2VyXzc4MzcwLTQ3/MDcuanBnP3NlbXQ9/YWlzX2h5YnJpZCZ3/PTc0MCZxPTgw"
@@ -38,18 +46,33 @@ export class AuthService {
             resolve(result);
           }
         }
-      ).end(file.buffer);  // ← Upload buffer directly
+      ).end(file.buffer);
     });
     
     avatarUrl = result.secure_url;
   }
     const hashedPassword = await bcrypt.hash(registerDto.password,10);
     const user = this.userRepository.create({
-      ...registerDto,
+      email: registerDto.email,
       password: hashedPassword,
-      isActive: true,
-      avatar: avatarUrl 
+      firstName: registerDto.firstName,
+      lastName: registerDto.lastName,
+      role: registerDto.role,
+      avatar: avatarUrl,
+      phone: registerDto.phoneNumber,
+      isActive: true 
     });
+
+    if(registerDto.role === UserRole.LAWYER) {
+      user.lawyerProfile = {
+        specializations: registerDto?.specializations!,
+        experience: registerDto.experience!,
+        successRate: registerDto.successRate ?? 0,
+        active: true
+
+
+      } as LawyerProfile
+    }
 
     await this.userRepository.save(user);
     const {password, ...result} = user;

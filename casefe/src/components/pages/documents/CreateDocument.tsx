@@ -46,9 +46,9 @@ export const AddDocumentDialog = () => {
                 <DialogTrigger asChild>
                     <Button className="cursor-pointer">Add Document</Button>
                 </DialogTrigger>
-                <DialogContent onInteractOutside={(e) => e.preventDefault()} className="lg:min-w-4xl">
+                <DialogContent onInteractOutside={(e) => e.preventDefault()} className="lg:min-w-4xl bg-white">
                     <DialogHeader>
-                        <DialogTitle>Add Case</DialogTitle>
+                        <DialogTitle className="bg-white">Add Case</DialogTitle>
                     </DialogHeader>
                     <Form {...form}>
                         <form onSubmit={form.handleSubmit(onSubmit)}>
