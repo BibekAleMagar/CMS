@@ -1,4 +1,9 @@
-import { Injectable, NotFoundException, ForbiddenException, InternalServerErrorException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  ForbiddenException,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import { CreateCaseDto } from './dto/create-case.dto';
 import { UpdateCaseDto } from './dto/update-case.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -14,7 +19,7 @@ export class CaseService {
     @InjectRepository(Case)
     private caseRepository: Repository<Case>,
     @InjectRepository(User)
-    private userRepository: Repository<User>
+    private userRepository: Repository<User>,
   ) {}
 
   async create(createCaseDto: CreateCaseDto, user: User): Promise<Case> {
@@ -52,7 +57,13 @@ export class CaseService {
     try {
       const caseEntity = await this.caseRepository.findOne({
         where: { id },
-        relations: ['lawyer', 'client', 'appointments',"documents", 'activityLogs'],
+        relations: [
+          'lawyer',
+          'client',
+          'appointments',
+          'documents',
+          'activityLogs',
+        ],
       });
 
       if (!caseEntity) throw new NotFoundException('Case not found');
@@ -63,12 +74,38 @@ export class CaseService {
     } catch (err) {
       console.error('Error fetching case:', err);
 
-      if (err instanceof NotFoundException || err instanceof ForbiddenException) {
+      if (
+        err instanceof NotFoundException ||
+        err instanceof ForbiddenException
+      ) {
         throw err;
       }
 
       throw new InternalServerErrorException('Failed to fetch case');
     }
+  }
+
+  async update(
+    id: number,
+    updateCaseDto: UpdateCaseDto,
+    currentUser: User,
+  ): Promise<Case> {
+    const caseEntity = await this.findOne(id, currentUser);
+
+    if (updateCaseDto.lawyerId) {
+      const lawyer = await this.userRepository.findOne({
+        where: { id: updateCaseDto.lawyerId },
+      });
+
+      if (!lawyer) {
+        throw new NotFoundException('Lawyer not found');
+      }
+      if (lawyer.role !== UserRole.LAWYER) {
+        throw new ForbiddenException('User is not a lawyer');
+      }
+      caseEntity.lawyerId = lawyer.id;
+    }
+    return this.caseRepository.save(caseEntity);
   }
 
   async remove(id: number, currentUser: User): Promise<void> {
