@@ -1,7 +1,11 @@
 import type { AxiosRequestConfig } from "axios";
 import instance, { loginInstance } from "./api";
 import { setBaseURL } from "./api";
-export const getData = async <T>(url: string, config?: AxiosRequestConfig, appWithoutApi?: boolean) => {
+export const getData = async <T>(
+  url: string,
+  config?: AxiosRequestConfig,
+  appWithoutApi?: boolean,
+) => {
   try {
     setBaseURL(appWithoutApi ?? false);
     const res = await instance.get<T>(url, config);
@@ -15,7 +19,7 @@ export const getData = async <T>(url: string, config?: AxiosRequestConfig, appWi
 export const postData = async <Payload, Response>(
   url: string,
   data: Payload,
-  config?: AxiosRequestConfig
+  config?: AxiosRequestConfig,
 ): Promise<Response> => {
   try {
     console.log(url);
@@ -32,10 +36,10 @@ export const postData = async <Payload, Response>(
 export const updateData = async <Payload, Response>(
   url: string,
   data: Payload,
-  config?: AxiosRequestConfig
+  config?: AxiosRequestConfig,
 ): Promise<Response> => {
   try {
-    const res = await instance.put<Response>(url, data, config);
+    const res = await instance.patch<Response>(url, data, config);
     return res.data;
   } catch (error) {
     console.error("Error in postData:", error);
@@ -45,7 +49,7 @@ export const updateData = async <Payload, Response>(
 
 export const deleteData = async <Response>(
   url: string,
-  config?: AxiosRequestConfig
+  config?: AxiosRequestConfig,
 ): Promise<Response> => {
   try {
     const res = await instance.delete<Response>(url, config);

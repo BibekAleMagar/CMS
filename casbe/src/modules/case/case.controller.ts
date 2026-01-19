@@ -1,4 +1,14 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  UseInterceptors,
+  UseGuards,
+} from '@nestjs/common';
 import { CaseService } from './case.service';
 import { CreateCaseDto } from './dto/create-case.dto';
 import { UpdateCaseDto } from './dto/update-case.dto';
@@ -17,18 +27,28 @@ export class CaseController {
   constructor(private readonly caseService: CaseService) {}
   @Post()
   @Roles(UserRole.SUPER_ADMIN, UserRole.LAWYER, UserRole.CLIENT)
-  create(@Body() createCaseDto: CreateCaseDto, @CurrentUser() user:User) {
-    return this.caseService.create(createCaseDto, user as any)
+  create(@Body() createCaseDto: CreateCaseDto, @CurrentUser() user: User) {
+    return this.caseService.create(createCaseDto, user as any);
   }
 
   @Get()
   findAll(@CurrentUser() user: User) {
-    return this.caseService.findAll(user)
+    return this.caseService.findAll(user);
   }
 
-  @Get(":id")
-  findOne(@Param("id") id:string, @CurrentUser() user: User) {
-    return this.caseService.findOne(+id, user)
+  @Get(':id')
+  findOne(@Param('id') id: string, @CurrentUser() user: User) {
+    return this.caseService.findOne(+id, user);
+  }
+
+  @Patch('update-lawyer/:id')
+  @Roles(UserRole.SUPER_ADMIN, UserRole.CLIENT)
+  update(
+    @Param('id') id: string,
+    @Body() updateCaseDto: UpdateCaseDto,
+    @CurrentUser() user: User,
+  ) {
+    return this.caseService.update(+id, updateCaseDto, user);
   }
 
   @Delete(':id')
@@ -36,7 +56,4 @@ export class CaseController {
   remove(@Param('id') id: string, @CurrentUser() user: User) {
     return this.caseService.remove(+id, user);
   }
-
-
- 
 }
