@@ -10,6 +10,7 @@ import {
   ShieldCheck,
   Briefcase,
   Car,
+  UserCircle,
 } from "lucide-react";
 import Link from "next/link";
 
@@ -30,8 +31,14 @@ import {
 import { useCaseById } from "@/src/hooks/query/case";
 import BackButton from "@/src/common/BackButton";
 import { AddDocumentDialog } from "@/src/components/pages/documents/CreateDocument";
+import { AssignLawyerDialog } from "@/src/components/pages/lawyer/AssignLawyer";
+import { useAuth } from "@/src/context/useAuth";
+import { UserRole } from "@/src/types/enums/user-role.enum";
+import { useEffect } from "react";
 
 const CaseDetails = () => {
+  const { user } = useAuth();
+
   const params = useParams();
   const id = Number(params.id);
   const { data } = useCaseById(id);
@@ -72,7 +79,12 @@ const CaseDetails = () => {
               </div>
             )}
           </div>
-          <AddDocumentDialog />
+          <div className="flex flex-col md:flex-row gap-4">
+            {user?.role === UserRole.CLIENT && !data.lawyer ? (
+              <AssignLawyerDialog />
+            ) : null}
+            <AddDocumentDialog />
+          </div>
         </CardContent>
       </Card>
 
@@ -118,6 +130,46 @@ const CaseDetails = () => {
                     bg="bg-green-100"
                   />
 
+                  {user?.role === UserRole?.LAWYER ? (
+                    <InfoItem
+                      icon={<UserCircle className="h-4 w-4 text-pink-600" />}
+                      label="Client"
+                      value={`${data?.client?.firstName} ${data.client.lastName}`}
+                      bg="bg-pink-100"
+                    />
+                  ) : user?.role === UserRole?.CLIENT ? (
+                    <InfoItem
+                      icon={<UserCircle className="h-4 w-4 text-pink-600" />}
+                      label="Lawyer"
+                      value={`${data?.lawyer?.firstName ?? "-"} ${data?.lawyer?.lastName ?? "-"}`}
+                      bg="bg-pink-100"
+                    />
+                  ) : user?.role === UserRole?.SUPER_ADMIN ? (
+                    <>
+                      <div className="flex gap-4">
+                        <InfoItem
+                          icon={
+                            <UserCircle className="h-4 w-4 text-pink-600" />
+                          }
+                          label="Client"
+                          value={`${data?.client?.firstName} ${data.client.lastName}`}
+                          bg="bg-pink-100"
+                        />
+
+                        <InfoItem
+                          icon={
+                            <UserCircle className="h-4 w-4 text-pink-600" />
+                          }
+                          label="Client"
+                          value={`${data?.lawyer?.firstName} ${data?.lawyer?.lastName}`}
+                          bg="bg-pink-100"
+                        />
+                      </div>
+                    </>
+                  ) : (
+                    ""
+                  )}
+
                   {data.court && (
                     <InfoItem
                       icon={<Gavel className="h-4 w-4 text-purple-600" />}
@@ -133,68 +185,71 @@ const CaseDetails = () => {
         </AccordionItem>
       </Accordion>
 
-     <Accordion type="single" collapsible className="lg:max-w-5xl">
-  <AccordionItem value="case-info">
-    <AccordionTrigger className="px-2 cursor-pointer border">
-      <div className="flex items-center gap-2">
-        <div className="flex items-center bg-blue-100 p-2 rounded-md">
-          <Briefcase className="text-red-600" size={20} />
-        </div>
-        <p className="md:text-md lg:text-lg font-semibold no-underline">
-          Case Documents
-        </p>
-      </div>
-    </AccordionTrigger>
+      <Accordion type="single" collapsible className="lg:max-w-5xl">
+        <AccordionItem value="case-info">
+          <AccordionTrigger className="px-2 cursor-pointer border">
+            <div className="flex items-center gap-2">
+              <div className="flex items-center bg-blue-100 p-2 rounded-md">
+                <Briefcase className="text-red-600" size={20} />
+              </div>
+              <p className="md:text-md lg:text-lg font-semibold no-underline">
+                Case Documents
+              </p>
+            </div>
+          </AccordionTrigger>
 
-<AccordionContent className="border rounded-md p-4">
-  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-    {data?.documents?.map((document) => {
-      const ext = document.fileName.split('.').pop()?.toLowerCase();
+          <AccordionContent className="border rounded-md p-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {data?.documents?.map((document) => {
+                const ext = document.fileName.split(".").pop()?.toLowerCase();
 
-      // Build inline URL for PDFs - replace /raw/upload/ with /image/upload/ and add flags
-      const pdfUrl = ext === 'pdf'
-        ? document.filePath.replace('/raw/upload/', '/image/upload/fl_attachment:inline/')
-        : '';
+                // Build inline URL for PDFs - replace /raw/upload/ with /image/upload/ and add flags
+                const pdfUrl =
+                  ext === "pdf"
+                    ? document.filePath.replace(
+                        "/raw/upload/",
+                        "/image/upload/fl_attachment:inline/",
+                      )
+                    : "";
 
-      return (
-        <Card
-          key={document.id}
-          className="overflow-hidden rounded-md shadow cursor-pointer hover:shadow-lg transition"
-          onClick={() => window.open(document.filePath, '_blank')}
-        >
-          <CardHeader className="flex flex-col gap-2 p-2">
-            {ext === 'pdf' ? (
-              <iframe
-                src={pdfUrl}
-                className="w-full h-64 border rounded pointer-events-none"
-                title={document.fileName}
-              />
-            ) : ext === 'doc' || ext === 'docx' ? (
-              <iframe
-                src={`https://docs.google.com/gview?url=${encodeURIComponent(document.filePath)}&embedded=true`}
-                className="w-full h-64 border rounded pointer-events-none"
-                title={document.fileName}
-              />
-            ) : (
-              <img
-                src={document.filePath}
-                alt={document.fileName}
-                className="w-full h-64 object-contain rounded pointer-events-none"
-              />
-            )}
+                return (
+                  <Card
+                    key={document.id}
+                    className="overflow-hidden rounded-md shadow cursor-pointer hover:shadow-lg transition"
+                    onClick={() => window.open(document.filePath, "_blank")}
+                  >
+                    <CardHeader className="flex flex-col gap-2 p-2">
+                      {ext === "pdf" ? (
+                        <iframe
+                          src={pdfUrl}
+                          className="w-full h-64 border rounded pointer-events-none"
+                          title={document.fileName}
+                        />
+                      ) : ext === "doc" || ext === "docx" ? (
+                        <iframe
+                          src={`https://docs.google.com/gview?url=${encodeURIComponent(document.filePath)}&embedded=true`}
+                          className="w-full h-64 border rounded pointer-events-none"
+                          title={document.fileName}
+                        />
+                      ) : (
+                        <img
+                          src={document.filePath}
+                          alt={document.fileName}
+                          className="w-full h-64 object-contain rounded pointer-events-none"
+                        />
+                      )}
 
-            <CardTitle className="mt-2 break-words">{document.fileName}</CardTitle>
-          </CardHeader>
-        </Card>
-      );
-    })}
-  </div>
-</AccordionContent>
-
-
-  </AccordionItem>
-</Accordion>
-
+                      <CardTitle className="mt-2 break-words">
+                        {document.fileName}
+                      </CardTitle>
+                    </CardHeader>
+                  </Card>
+                );
+              })}
+            </div>
+          </AccordionContent>
+        </AccordionItem>
+      </Accordion>
     </div>
   );
 };
