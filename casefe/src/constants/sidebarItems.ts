@@ -14,13 +14,13 @@ export type SidebarItemsType = {
 export const sidebarItems: SidebarItemsType[] = [
   {
     title: "Dashboard",
-    url: "/protected/dashboard",
+    url: "/dashboard",
     roles: [UserRole.CLIENT, UserRole.LAWYER, UserRole.SUPER_ADMIN],
     icon: LayoutDashboard,
   },
   {
     title: "Case",
-    url: "case",
+    url: "/case",
     roles: [UserRole.CLIENT, UserRole.LAWYER],
     icon: Landmark,
   },

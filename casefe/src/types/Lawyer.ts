@@ -20,6 +20,5 @@ export type Lawyer = {
   isActive: boolean;
   createdAt: string; // ISO date string
   updatedAt: string; // ISO date string
-  client: User;
-  lawyer: User | null;
+ 
 };

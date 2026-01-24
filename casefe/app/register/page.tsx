@@ -14,7 +14,6 @@ import { useRegister } from "@/src/hooks/mutation/register";
 import { useRouter } from "next/navigation";
 import { AxiosError } from "axios";
 import { CommaSeparatedInput } from "@/src/common/CommaSeperator";
-import { useLawyer } from "@/src/hooks/query/lawyer";
 
 const userRolesArray = Object.values(UserRole).map((role) => ({
   value: role,
@@ -42,11 +41,8 @@ const Register: React.FC = () => {
     },
   });
   const role = form.watch("role");
-  const { data: lawyers } = useLawyer();
-  console.log("Available lawyers:", lawyers);
   const { mutateAsync, isPending } = useRegister();
   const onSubmit = async (data: RegisterType) => {
-    console.log("Submitting data:", data);
     debugger;
     try {
       const res = await mutateAsync({
