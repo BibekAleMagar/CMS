@@ -92,6 +92,10 @@ export class CaseService {
   ): Promise<Case> {
     const caseEntity = await this.findOne(id, currentUser);
 
+    if (updateCaseDto.status) {
+      caseEntity.status = updateCaseDto.status;
+    }
+
     if (updateCaseDto.lawyerId) {
       const lawyer = await this.userRepository.findOne({
         where: { id: updateCaseDto.lawyerId },
