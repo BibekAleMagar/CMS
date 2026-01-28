@@ -9,24 +9,35 @@ import {
 import { Button } from "@/src/components/ui/button";
 import { User } from "lucide-react";
 import { useAuth } from "@/src/context/useAuth";
-import Login from "../../../app/login/page";
+import { ShieldAlertIcon } from "lucide-react";
 
 const UserActionDropDown = () => {
   const { user } = useAuth();
 
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button variant="outline" className="bg-white text-black cursor-pointer">
-          <User /> {user?.email || "-"}
+    <div className="flex gap-4 items-center">
+      <DropdownMenu>
+        <Button variant="outline" className="bg-white text-black">
+          <ShieldAlertIcon className="mr-1" />
+          {user?.role}
         </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent className="">
-        <div className="flex flex-col gap-1">
-          {/* <UserNameUpdateDialog username={user || ""} setUser={setUser} /> */}
-        </div>
-      </DropdownMenuContent>
-    </DropdownMenu>
+      </DropdownMenu>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button
+            variant="outline"
+            className="bg-white text-black cursor-pointer"
+          >
+            <User /> {user?.email || "-"}
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent className="">
+          <div className="flex flex-col gap-1">
+            {/* <UserNameUpdateDialog username={user || ""} setUser={setUser} /> */}
+          </div>
+        </DropdownMenuContent>
+      </DropdownMenu>
+    </div>
   );
 };
 

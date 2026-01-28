@@ -14,6 +14,7 @@ import { Loading } from "@/src/common/Loading";
 import { Briefcase, Gavel, Calendar, ArrowUpRight } from "lucide-react";
 import { Badge } from "@/src/components/ui/badge";
 import Link from "next/link";
+import { Button } from "@/src/components/ui/button";
 
 const Case = () => {
   const { data: caseData, isLoading, error } = useCase();
@@ -45,10 +46,10 @@ const Case = () => {
             Failed to load cases. Please try again later.
           </div>
         ) : caseData && caseData.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 ">
             {caseData.map((item) => (
               <Link key={item.id} href={`case/${item.id}`}>
-                <Card className="group hover:shadow-lg transition-all duration-300 border-muted-foreground/10">
+                <Card className="group hover:shadow-lg transition-all duration-300 border-muted-foreground/20 min-h-4xl">
                   <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-2">
                     <div className="space-y-1">
                       <CardTitle className="text-xl font-bold group-hover:text-primary transition-colors">
@@ -77,10 +78,9 @@ const Case = () => {
                         <span>Updated: {new Date().toLocaleDateString()}</span>
                       </div>
                     </div>
-
-                    <button className="mt-6 w-full flex items-center justify-center gap-2 text-xs font-semibold uppercase tracking-wider text-primary  transition-opacity">
+                    <Button className="w-full mt-5 cursor-pointer">
                       View Case Details <ArrowUpRight className="w-3 h-3" />
-                    </button>
+                    </Button>
                   </CardContent>
                 </Card>
               </Link>

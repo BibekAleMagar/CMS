@@ -33,7 +33,7 @@ export const AssignLawyerDialog = () => {
     },
   });
 
-  const { data: lawyers } = useLawyer();
+  const { data: lawyers } = useLawyer(isOpen);
   const { mutateAsync, isPending } = useAssignLawyer(); // Add mutation hook
 
   const handleAssignLawyer = async (lawyerId: number) => {

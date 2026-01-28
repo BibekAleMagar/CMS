@@ -13,3 +13,9 @@ export const useAssignLawyer = () => {
     queryKeyToInvalidate: ["case"],
   });
 };
+
+export const useUpdateCaseStatus = () => {
+  return useUpdate<UpdateCaseDto, unknown>({
+    queryKeyToInvalidate: ["case"],
+  });
+};

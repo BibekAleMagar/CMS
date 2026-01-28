@@ -35,6 +35,7 @@ import { AssignLawyerDialog } from "@/src/components/pages/lawyer/AssignLawyer";
 import { useAuth } from "@/src/context/useAuth";
 import { UserRole } from "@/src/types/enums/user-role.enum";
 import { useEffect } from "react";
+import { UpdateCaseStatus } from "@/src/components/pages/Case/UpdateCaseStatus";
 
 const CaseDetails = () => {
   const { user } = useAuth();
@@ -83,6 +84,7 @@ const CaseDetails = () => {
             {user?.role === UserRole.CLIENT && !data.lawyer ? (
               <AssignLawyerDialog />
             ) : null}
+            {user?.role === UserRole.LAWYER && <UpdateCaseStatus />}
             <AddDocumentDialog />
           </div>
         </CardContent>
