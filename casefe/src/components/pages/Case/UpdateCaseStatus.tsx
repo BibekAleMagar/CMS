@@ -25,15 +25,19 @@ import {
 } from "../../ui/carousel";
 import { UpdateCaseDto } from "@/src/types/Case";
 import { CaseStatus } from "@/src/types/enums/case-status.enum";
+import { Form } from "../../ui/form";
+import { enumToArray } from "@/src/common/SelectEnum";
+import { SelectElement } from "../../ui/select";
 
 export const UpdateCaseStatus = () => {
   const param = useParams();
   const id = Number(param.id);
   const [isOpen, setIsopen] = useState(false);
+  const caseStatus = enumToArray(CaseStatus);
 
-  const form = useForm<UpdateCaseDto>({
-    defaultValues: {
-      lawyerId: undefined,
+  const form = useForm({
+    values: {
+      status: "",
     },
   });
 
@@ -54,7 +58,7 @@ export const UpdateCaseStatus = () => {
 
   return (
     <>
-      <Dialog
+      {/* <Dialog
         open={isOpen}
         onOpenChange={(open) => {
           setIsopen(open);
@@ -75,7 +79,10 @@ export const UpdateCaseStatus = () => {
             <DialogTitle>Update Status</DialogTitle>
           </DialogHeader>
         </DialogContent>
-      </Dialog>
+      </Dialog><SelectEnum name="status" enumObject={CaseStatus} /> */}
+      <Form {...form}>
+        <form></form>
+      </Form>
     </>
   );
 };

@@ -15,14 +15,17 @@ const Layout = async ({ children }: Props) => {
   return (
     <SidebarProvider defaultOpen={isSidebarOpen}>
       <AuthProvider>
-          <CustomSidebar />
-          <div className="relative basis-full bg-white">
-            <SidebarTrigger className="absolute top-2" size="lg" />
-            <div className="flex flex-col ">
-              <Navbar />
-              <main className="p-3 pt-1 lg:p-6 lg:pt-1">{children}</main>
-            </div>
+        <CustomSidebar />
+        <div className="relative basis-full bg-white">
+          <SidebarTrigger
+            className="absolute top-2 text-black cursor-pointer"
+            size="lg"
+          />
+          <div className="flex flex-col ">
+            <Navbar />
+            <main className="p-3 pt-1 lg:p-6 lg:pt-1">{children}</main>
           </div>
+        </div>
       </AuthProvider>
     </SidebarProvider>
   );

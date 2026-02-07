@@ -17,11 +17,11 @@ import {
   useFormContext,
 } from "react-hook-form";
 
-const Select = SelectPrimitive.Root;
+export const Select = SelectPrimitive.Root;
 
-const SelectValue = SelectPrimitive.Value;
+export const SelectValue = SelectPrimitive.Value;
 
-const SelectTrigger = React.forwardRef<
+export const SelectTrigger = React.forwardRef<
   React.ElementRef<typeof SelectPrimitive.Trigger>,
   React.ComponentPropsWithoutRef<typeof SelectPrimitive.Trigger>
 >(({ className, children, ...props }, ref) => (
@@ -29,7 +29,7 @@ const SelectTrigger = React.forwardRef<
     ref={ref}
     className={cn(
       "flex h-9 w-full items-center justify-between whitespace-nowrap rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1",
-      className
+      className,
     )}
     {...props}
   >
@@ -41,7 +41,7 @@ const SelectTrigger = React.forwardRef<
 ));
 SelectTrigger.displayName = SelectPrimitive.Trigger.displayName;
 
-const SelectContent = React.forwardRef<
+export const SelectContent = React.forwardRef<
   React.ElementRef<typeof SelectPrimitive.Content>,
   React.ComponentPropsWithoutRef<typeof SelectPrimitive.Content>
 >(({ className, children, position = "popper", ...props }, ref) => (
@@ -50,7 +50,7 @@ const SelectContent = React.forwardRef<
       ref={ref}
       className={cn(
         "relative z-50 max-h-96 min-w-[8rem] overflow-hidden rounded-md border bg-popover text-popover-foreground shadow-md",
-        className
+        className,
       )}
       position={position}
       {...props}
@@ -65,7 +65,7 @@ const SelectContent = React.forwardRef<
 ));
 SelectContent.displayName = SelectPrimitive.Content.displayName;
 
-const SelectItem = React.forwardRef<
+export const SelectItem = React.forwardRef<
   React.ElementRef<typeof SelectPrimitive.Item>,
   React.ComponentPropsWithoutRef<typeof SelectPrimitive.Item>
 >(({ className, children, ...props }, ref) => (
@@ -73,7 +73,7 @@ const SelectItem = React.forwardRef<
     ref={ref}
     className={cn(
       "relative flex w-full cursor-default select-none items-center rounded-sm py-1.5 pl-2 pr-8 text-sm outline-none focus:bg-accent focus:text-accent-foreground",
-      className
+      className,
     )}
     {...props}
   >
@@ -98,7 +98,6 @@ const SelectLabel = React.forwardRef<
   />
 ));
 SelectLabel.displayName = SelectPrimitive.Label.displayName;
-
 
 type SelectOption = {
   label: string;
@@ -141,7 +140,7 @@ export function SelectElement<T extends FieldValues>({
           <Select onValueChange={field.onChange} value={field.value ?? ""}>
             <FormControl>
               <SelectTrigger>
-                <SelectValue placeholder={placeholder || "Select a role"}  />
+                <SelectValue placeholder={placeholder || "Select a role"} />
               </SelectTrigger>
             </FormControl>
             <SelectContent>

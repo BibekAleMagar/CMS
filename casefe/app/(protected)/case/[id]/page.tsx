@@ -1,5 +1,7 @@
 "use client";
 
+import { Form } from "@/src/components/ui/form";
+import { useForm } from "react-hook-form";
 import { useParams } from "next/navigation";
 import {
   ChevronLeft,
@@ -36,13 +38,26 @@ import { useAuth } from "@/src/context/useAuth";
 import { UserRole } from "@/src/types/enums/user-role.enum";
 import { useEffect } from "react";
 import { UpdateCaseStatus } from "@/src/components/pages/Case/UpdateCaseStatus";
-
+import {
+  Dialog,
+  DialogTrigger,
+  DialogContent,
+} from "@/src/components/ui/dialog";
+import { CaseStatus } from "@/src/types/enums/case-status.enum";
+import { useUpdateCaseStatus } from "@/src/hooks/mutation/case";
 const CaseDetails = () => {
   const { user } = useAuth();
 
   const params = useParams();
   const id = Number(params.id);
   const { data } = useCaseById(id);
+  const form = useForm({
+    values: {
+      status: data?.status,
+    },
+  });
+
+  const { mutate: updateCaseStatus } = useUpdateCaseStatus();
 
   if (!data) return null;
 
@@ -64,10 +79,9 @@ const CaseDetails = () => {
         <CardContent className="flex justify-between items-center">
           <div className="flex flex-wrap items-center gap-6">
             <Badge className="flex items-center gap-2 px-4 py-2 text-sm">
-              <ShieldCheck className="h-4 w-4" />
+              <ShieldCheck className="h-4 w-4 text-white" />
               {data.status}
             </Badge>
-
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
               <Calendar className="h-4 w-4" />
               {new Date(data.createdAt).toLocaleDateString()}
@@ -89,6 +103,22 @@ const CaseDetails = () => {
           </div>
         </CardContent>
       </Card>
+
+      <div>
+        <div>
+          <p>Status</p>
+          {data?.status === CaseStatus.PENDING ? (
+            <p>
+              <ShieldCheck className="h-16 w-16 text-white text-4xl" />
+            </p>
+          ) : (
+            <Badge className="flex items-center gap-2 px-4 py-2 text-sm">
+              <ShieldCheck className="h-4 w-4 text-white" />
+              Closed
+            </Badge>
+          )}
+        </div>
+      </div>
 
       <Accordion type="single" collapsible className="lg:max-w-5xl">
         <AccordionItem value="case-info">
@@ -281,3 +311,11 @@ const InfoItem = ({
     </div>
   </div>
 );
+
+const Detail = ({
+  className,
+  icon,
+}: {
+  className: string;
+  icon: React.ReactNode;
+}) => {};

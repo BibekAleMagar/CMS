@@ -37,27 +37,33 @@ const SwitchElement = ({
     </button>
   );
 };
-
 const InputElement = React.forwardRef<
   HTMLInputElement,
-  React.ComponentProps<"input">
->(({ className, type, ...props }, ref) => {
+  React.ComponentProps<"input"> & {
+    children?: React.ReactNode;
+  }
+>(({ className, type, children, ...props }, ref) => {
   return (
-    <input
-      type={type}
-      className={cn(
-        "flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-base shadow-none transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm",
-        className
-      )}
-      ref={ref}
-      {...props}
-    />
+    <div className="relative flex items-center">
+      <input
+        ref={ref}
+        type={type}
+        className={cn(
+          "flex text-black h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-base shadow-none transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm",
+          className,
+        )}
+        {...props}
+      />
+      {children}
+    </div>
   );
 });
-InputElement.displayName = "Input";
 
-interface InputProps<TFieldValues extends FieldValues>
-  extends React.ComponentProps<"input"> {
+InputElement.displayName = "InputElement";
+
+interface InputProps<
+  TFieldValues extends FieldValues,
+> extends React.ComponentProps<"input"> {
   name: Path<TFieldValues>;
   type?: React.HTMLInputTypeAttribute | "switch";
   label?: string;
@@ -101,8 +107,8 @@ const Input = <TFieldValues extends FieldValues>({
                   Array.isArray(field.value)
                     ? field.value
                     : field.value
-                    ? [field.value]
-                    : []
+                      ? [field.value]
+                      : []
                 }
                 onFilesChange={(files) => {
                   // Convert back to original format
@@ -157,11 +163,10 @@ const Input = <TFieldValues extends FieldValues>({
 };
 export { Input, InputElement };
 
-interface InputFileElementProps
-  extends Omit<
-    React.InputHTMLAttributes<HTMLInputElement>,
-    "type" | "value" | "onChange"
-  > {
+interface InputFileElementProps extends Omit<
+  React.InputHTMLAttributes<HTMLInputElement>,
+  "type" | "value" | "onChange"
+> {
   name: string;
   value?: File[];
   onFilesChange: (files: File[]) => void;
@@ -181,7 +186,7 @@ export const InputFileElement = React.forwardRef<
       multiple = true,
       ...props
     },
-    ref
+    ref,
   ) => {
     const inputRef = React.useRef<HTMLInputElement | null>(null);
 
@@ -201,8 +206,8 @@ export const InputFileElement = React.forwardRef<
               (f) =>
                 f.name === file.name &&
                 f.size === file.size &&
-                f.type === file.type
-            )
+                f.type === file.type,
+            ),
         );
       } else {
         updatedFiles = newFiles.length > 0 ? [newFiles[0]] : [];
@@ -231,7 +236,7 @@ export const InputFileElement = React.forwardRef<
           onChange={handleChange}
           className={cn(
             "flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-base shadow-none transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm",
-            className
+            className,
           )}
           {...props}
         />
@@ -280,6 +285,6 @@ export const InputFileElement = React.forwardRef<
         )}
       </div>
     );
-  }
+  },
 );
 InputFileElement.displayName = "InputFileElement";
