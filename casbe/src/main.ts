@@ -1,32 +1,32 @@
-import { NestFactory } from '@nestjs/core';
+import { NestFactory, Reflector } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { DocumentBuilder } from '@nestjs/swagger/dist/document-builder';
 import { SwaggerModule } from '@nestjs/swagger/dist/swagger-module';
 import { DataSource } from 'typeorm';
 import { createSuperAdmin } from './seed/superAdmin.seed';
 import { ConfigService } from '@nestjs/config';
+import { ClassSerializerInterceptor } from '@nestjs/common';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  const configService = app.get(ConfigService)
+  app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
+  const configService = app.get(ConfigService);
   console.log('Database Configuration:');
   console.log('  DB_HOST:', configService.get('DB_HOST'));
-  console.log("NODE_ENV = ", process.env.NODE_ENV)
+  console.log('NODE_ENV = ', process.env.NODE_ENV);
   app.enableCors({
-    origin: "*",
+    origin: '*',
     methods: ['GET', 'POST', 'PATCH', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: "*",
-  })
+    allowedHeaders: '*',
+  });
   const dataSource = app.get(DataSource);
   const config = new DocumentBuilder()
-    .setTitle('API')
+    .setTitle('swagger')
     .setVersion('1.0')
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup("api", app, document);
-
-
+  SwaggerModule.setup('api', app, document);
 
   await app.listen(process.env.PORT ?? 3001);
 }

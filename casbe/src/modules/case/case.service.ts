@@ -92,6 +92,13 @@ export class CaseService {
   ): Promise<Case> {
     const caseEntity = await this.findOne(id, currentUser);
 
+    const isUpdatingLawyerOnly =
+      updateCaseDto.lawyerId && !updateCaseDto.status;
+
+    if (updateCaseDto?.status && currentUser?.role === UserRole?.CLIENT) {
+      throw new ForbiddenException('Client cannot update status');
+    }
+
     if (updateCaseDto.status) {
       caseEntity.status = updateCaseDto.status;
     }
@@ -130,7 +137,6 @@ export class CaseService {
   private checkAccess(caseEntity: Case, user: User) {
     if (user?.role === UserRole.SUPER_ADMIN) return;
 
-    // Safe optional chaining
     const clientId = caseEntity?.clientId ?? caseEntity?.client?.id;
     const lawyerId = caseEntity?.lawyerId ?? caseEntity?.lawyer?.id;
 

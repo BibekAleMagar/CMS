@@ -13,6 +13,10 @@ export class UserService {
     private userRepository: Repository<User>,
   ) {}
 
+  async Users(): Promise<Omit<User, 'password'>[]> {
+    return this.userRepository.find();
+  }
+
   async findAllLawyer(): Promise<User[]> {
     return this.userRepository.find({
       where: { role: UserRole.LAWYER },

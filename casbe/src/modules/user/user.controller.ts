@@ -15,6 +15,11 @@ import { UpdateUserDto } from './dto/update-user.dto';
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
+  @Get()
+  Users() {
+    return this.userService.Users();
+  }
+
   @Get('lawyers')
   findAllLawyer() {
     return this.userService.findAllLawyer();

@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import {TypeOrmModule} from "@nestjs/typeorm"
+import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserModule } from './modules/user/user.module';
 import { UserController } from './modules/user/user.controller';
 import { DocumentsModule } from './modules/documents/documents.module';
@@ -15,12 +15,23 @@ import { getTypeOrmConfig } from './config/typeorm.config';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({isGlobal: true, envFilePath: `.env.${process.env.NODE_ENV || 'development'}`}),
-    TypeOrmModule.forRootAsync({
-      useFactory: (configService: ConfigService) => getTypeOrmConfig(configService),
-      inject: [ConfigService]
+    ConfigModule.forRoot({
+      isGlobal: true,
+      envFilePath: `.env.${process.env.NODE_ENV || 'development'}`,
     }),
-    UserModule, DocumentsModule, CaseModule, AppointmentModule, ActivityModule, CloudinaryModule, AuthModule],
+    TypeOrmModule.forRootAsync({
+      useFactory: (configService: ConfigService) =>
+        getTypeOrmConfig(configService),
+      inject: [ConfigService],
+    }),
+    UserModule,
+    DocumentsModule,
+    CaseModule,
+    AppointmentModule,
+    ActivityModule,
+    CloudinaryModule,
+    AuthModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })

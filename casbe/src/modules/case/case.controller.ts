@@ -20,6 +20,7 @@ import { User } from '../user/entities/user.entity';
 import { CurrentUser } from 'src/common/decorator/current-user.decorator';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiConsumes } from '@nestjs/swagger';
+import { CaseStatus } from 'src/common/enums/case-status.enum';
 
 @Controller('case')
 @UseGuards(JwtAuthGuard, RolesGuard)
@@ -41,14 +42,15 @@ export class CaseController {
     return this.caseService.findOne(+id, user);
   }
 
-  @Patch('update-lawyer/:id')
-  @Roles(UserRole.SUPER_ADMIN, UserRole.CLIENT)
-  update(
+  @Patch('update-status/:id')
+  @Roles(UserRole.SUPER_ADMIN, UserRole.LAWYER) // only roles allowed to change status
+  updateStatus(
     @Param('id') id: string,
-    @Body() updateCaseDto: UpdateCaseDto,
+    @Body('status') status: CaseStatus, // directly take status from body
     @CurrentUser() user: User,
   ) {
-    return this.caseService.update(+id, updateCaseDto, user);
+    // Wrap status in UpdateCaseDto
+    return this.caseService.update(+id, { status } as UpdateCaseDto, user);
   }
 
   @Delete(':id')

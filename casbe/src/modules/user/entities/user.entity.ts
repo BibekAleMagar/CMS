@@ -1,63 +1,69 @@
-import { CaseStatus } from "src/common/enums/case-status.enum";
-import { UserRole } from "src/common/enums/user-role.enum";
-import { Column, CreateDateColumn, Entity, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
-import { Case } from "src/modules/case/entities/case.entity";
-import { Appointment } from "src/modules/appointment/entities/appointment.entity";
-import { CaseDocument } from "src/modules/documents/entities/document.entity";
-import { ActivityLog } from "src/modules/activity/entities/activity.entity";
-import { LawyerProfile } from "./lawyer-profile.entity";
+import { UserRole } from 'src/common/enums/user-role.enum';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  OneToMany,
+  OneToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
+import { Case } from 'src/modules/case/entities/case.entity';
+import { Appointment } from 'src/modules/appointment/entities/appointment.entity';
+import { CaseDocument } from 'src/modules/documents/entities/document.entity';
+import { ActivityLog } from 'src/modules/activity/entities/activity.entity';
+import { LawyerProfile } from './lawyer-profile.entity';
+import { Exclude } from 'class-transformer';
 @Entity('users')
 export class User {
+  @PrimaryGeneratedColumn()
+  id: number;
 
-    @PrimaryGeneratedColumn()
-    id: number;
+  @Column({ unique: true })
+  email: string;
 
-    @Column({unique: true})
-    email: string;
+  @Exclude()
+  @Column()
+  password: string;
 
-    @Column()
-    password: string;
+  @Column()
+  firstName: string;
 
-    @Column()
-    firstName: string;
+  @Column()
+  lastName: string;
 
-    @Column()
-    lastName: string;
+  @Column({ type: 'enum', enum: UserRole, default: UserRole.CLIENT })
+  role: UserRole;
 
-    @Column({type: 'enum', enum: UserRole, default: UserRole.CLIENT})
-    role: UserRole
+  @Column({ nullable: true })
+  phone: string;
 
-    @Column({nullable: true})
-    phone: string;
+  @Column({ nullable: true })
+  avatar: string;
 
-    @Column({nullable: true})
-    avatar: string;
+  @OneToOne(() => LawyerProfile, (profile) => profile.user, { cascade: true })
+  lawyerProfile: LawyerProfile;
 
-    @OneToOne(() => LawyerProfile, (profile) => profile.user, {cascade: true})
-    lawyerProfile: LawyerProfile
+  @Column({ name: 'is_active', default: true })
+  isActive: boolean;
 
-    @Column({name: 'is_active', default: true})
-    isActive: boolean;
+  @CreateDateColumn({ name: 'created_at', type: 'timestamp' })
+  createdAt: Date;
 
-    @CreateDateColumn({name: 'created_at', type: 'timestamp'})
-    createdAt: Date;
+  @CreateDateColumn({ name: 'updated_at', type: 'timestamp' })
+  updatedAt: Date;
 
-    @CreateDateColumn({name: "updated_at", type: 'timestamp'})
-    updatedAt: Date;
+  @OneToMany(() => Case, (caseEntity) => caseEntity.lawyer)
+  casesAsLawyer: Case[];
 
-    @OneToMany(() => Case, (caseEntity) => caseEntity.lawyer)
-    casesAsLawyer: Case[];
+  @OneToMany(() => Case, (caseEntity) => caseEntity.client)
+  casesAsClient: Case[];
 
-    @OneToMany(() => Case, (caseEntity) => caseEntity.client)
-    casesAsClient: Case[];
+  @OneToMany(() => CaseDocument, (caseDocument) => caseDocument.uploader)
+  documents: CaseDocument[];
 
-    @OneToMany(() => CaseDocument, (caseDocument) => caseDocument.uploader)
-    documents: CaseDocument[];
+  @OneToMany(() => Appointment, (appointment) => appointment.user)
+  appointments: Appointment[];
 
-    @OneToMany(() => Appointment, (appointment) => appointment.user)
-    appointments: Appointment[];
-
-    @OneToMany(() => ActivityLog, (log) => log.user)
-    activityLogs: ActivityLog[];
-
+  @OneToMany(() => ActivityLog, (log) => log.user)
+  activityLogs: ActivityLog[];
 }
