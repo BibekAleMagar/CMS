@@ -13,6 +13,9 @@ import {
   Briefcase,
   Car,
   UserCircle,
+  CircleAlert,
+  CircleCheck,
+  Home,
 } from "lucide-react";
 import Link from "next/link";
 
@@ -106,17 +109,47 @@ const CaseDetails = () => {
 
       <div>
         <div>
-          <p>Status</p>
-          {data?.status === CaseStatus.PENDING ? (
-            <p>
-              <ShieldCheck className="h-16 w-16 text-white text-4xl" />
-            </p>
+          {data?.status === CaseStatus?.PENDING ? (
+            <Clock className="text-xl" />
+          ) : data?.status === CaseStatus.RESOLVED ? (
+            <CircleCheck className="text-xl" />
           ) : (
-            <Badge className="flex items-center gap-2 px-4 py-2 text-sm">
-              <ShieldCheck className="h-4 w-4 text-white" />
-              Closed
-            </Badge>
+            <ShieldCheck className="text-xl" />
           )}
+          <div>
+            <p>Status</p>
+            {data?.status === CaseStatus.PENDING ? (
+              <p className="text-2xl inline-flex items-center">Pending</p>
+            ) : data?.status === CaseStatus.RESOLVED ? (
+              <p className="text-2xl inline-flex items-center">Resolved</p>
+            ) : (
+              <p className="text-2xl inline-flex items-center">Closed</p>
+            )}
+          </div>
+        </div>
+        <div>
+          <Calendar className="text-xl" />
+          <div>
+            <p>Date Created</p>
+            <p>{data?.createdAt}</p>
+          </div>
+        </div>
+        <div>
+          <UserCircle className="text-xl" />
+          <div>
+            <p>{user?.role === UserRole.CLIENT ? "Client" : "Lawyer"}</p>
+            <p>
+              {user?.role === UserRole.LAWYER} ? `${data?.client?.firstName}` :
+              `${data?.lawyer?.firstName}`{" "}
+            </p>
+          </div>
+        </div>
+        <div>
+          <Home className="text-xl" />
+          <div>
+            <p>Court</p>
+            <p>{data?.court}</p>
+          </div>
         </div>
       </div>
 

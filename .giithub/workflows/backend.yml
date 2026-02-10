@@ -1,0 +1,35 @@
+name: Deploy NestJs backend to Azure
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-deploy:
+    runs on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Nodejs
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        working-directory: casbe
+        run: npm install
+
+      - name: Build NestJS backend
+        working-directory: casbe
+        run: npm run build
+      
+       - name: Deploy to Azure
+        uses: azure/webapps-deploy@v3
+        with:
+          app-name: legalflow
+          publish-profile: Desktop/Azure/legalflow.PublishSettings
+          package: casbe
+
