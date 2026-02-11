@@ -27,62 +27,94 @@ import { UpdateCaseDto } from "@/src/types/Case";
 import { CaseStatus } from "@/src/types/enums/case-status.enum";
 import { Form } from "../../ui/form";
 import { enumToArray } from "@/src/common/SelectEnum";
-import { SelectElement } from "../../ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectElement,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../../ui/select";
+import { useCaseById } from "@/src/hooks/query/case";
 
 export const UpdateCaseStatus = () => {
   const param = useParams();
   const id = Number(param.id);
-  const [isOpen, setIsopen] = useState(false);
+  const [pendingStatus, setPendingStatus] = useState<CaseStatus | null>(null);
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+
   const caseStatus = enumToArray(CaseStatus);
-
-  const form = useForm({
-    values: {
-      status: "",
-    },
-  });
-
+  const { data } = useCaseById(id);
   const { mutateAsync, isPending } = useUpdateCaseStatus();
 
-  const handleAssignLawyer = async (status: CaseStatus) => {
+  const handleSelectClick = (val: string) => {
+    setPendingStatus(val as CaseStatus);
+    setIsConfirmOpen(true);
+  };
+
+  const confirmUpdate = async () => {
+    if (!pendingStatus) return;
     try {
       await mutateAsync({
-        url: `/case/update-lawyer/${id}`,
-        payload: { status },
+        url: `/case/update-status/${id}`,
+        payload: { status: pendingStatus },
         successMessage: "Status updated successfully",
       });
-      setIsopen(false);
+      setIsConfirmOpen(false);
     } catch (error) {
-      console.error("Failed to assign lawyer:", error);
+      console.error(error);
     }
   };
 
   return (
     <>
-      {/* <Dialog
-        open={isOpen}
-        onOpenChange={(open) => {
-          setIsopen(open);
-          form.reset();
-        }}
-      >
-        <DialogTrigger asChild>
-          <Button className="cursor-pointer w-full sm:w-auto">
-            Update Status
-          </Button>
-        </DialogTrigger>
-
-        <DialogContent
-          onInteractOutside={(e) => e.preventDefault()}
-          className="bg-white text-black"
+      {data && (
+        <Select
+          defaultValue={String(data.status)}
+          onValueChange={handleSelectClick}
         >
-          <DialogHeader className="">
-            <DialogTitle>Update Status</DialogTitle>
+          <SelectTrigger className="min-w-[130px]">
+            <SelectValue placeholder="Select a status" className="text-black" />
+          </SelectTrigger>
+          <SelectContent>
+            {caseStatus.map((status) => (
+              <SelectItem
+                key={status.value}
+                value={status.value}
+                className="cursor-pointer"
+              >
+                {status.label}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      )}
+
+      {/* Separate Dialog for Confirmation */}
+      <Dialog open={isConfirmOpen} onOpenChange={setIsConfirmOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Confirm Status Change</DialogTitle>
           </DialogHeader>
+          <p>Are you sure you want to change the status to {pendingStatus}?</p>
+          <div className="flex justify-end gap-2">
+            <Button
+              variant="outline"
+              onClick={() => setIsConfirmOpen(false)}
+              className="cursor-pointer bg-white hover:bg-white shadow"
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={confirmUpdate}
+              disabled={isPending}
+              className="cursor-pointer bg-black hover:bg-black"
+            >
+              {isPending ? "Updating..." : "Update"}
+            </Button>
+          </div>
         </DialogContent>
-      </Dialog><SelectEnum name="status" enumObject={CaseStatus} /> */}
-      <Form {...form}>
-        <form></form>
-      </Form>
+      </Dialog>
     </>
   );
 };
