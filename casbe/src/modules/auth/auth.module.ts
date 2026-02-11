@@ -11,15 +11,10 @@ import { MulterModule } from '@nestjs/platform-express';
 import { diskStorage, memoryStorage } from 'multer';
 import { extname } from 'path';
 
-
-
-
-
-
 @Module({
   imports: [
-   MulterModule.register({
-      storage: memoryStorage(),  // ← Direct to memory, no disk
+    MulterModule.register({
+      storage: memoryStorage(), // ← Direct to memory, no disk
       fileFilter: (req, file, cb) => {
         if (!file.mimetype.match(/\/(jpg|jpeg|png|gif|webp)$/)) {
           cb(new Error('Only image files are allowed!'), false);
@@ -37,13 +32,14 @@ import { extname } from 'path';
       inject: [ConfigService],
       useFactory: async (configService: ConfigService) => ({
         secret: configService.get<string>('JWT_SECRET'),
-        signOptions: { expiresIn: configService.get<string>('JWT_EXPIRES_IN') },
+        signOptions: {
+          expiresIn: configService.get<string>('JWT_EXPIRES_IN') as any,
+        },
       }),
     }),
   ],
   providers: [AuthService, JwtStrategy],
   controllers: [AuthController],
   exports: [AuthService],
-  
 })
 export class AuthModule {}
