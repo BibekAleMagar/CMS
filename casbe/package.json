@@ -4,8 +4,8 @@
   "description": "Legal Case Management System Backend",
   "scripts": {
     "build": "NODE_ENV=production nest build",
-    "start": "node dist/main",
     "start:dev": "NODE_ENV=development nest start --watch",
+    "start": "node dist/main",
     "start:debug": "NODE_ENV=development nest start --debug --watch",
     "start:prod": "NODE_ENV=production node dist/main",
     "typeorm": "typeorm-ts-node-commonjs",
