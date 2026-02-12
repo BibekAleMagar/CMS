@@ -30,11 +30,19 @@ jobs:
 
       - name: Install dependencies
         working-directory: casbe
+        run: pnpm install --frozen-lockfile --prod
+
+      - name: Install dev dependencies for build
+        working-directory: casbe
         run: pnpm install --frozen-lockfile
 
       - name: Build NestJS backend
         working-directory: casbe
         run: pnpm run build
+
+      - name: Remove dev dependencies
+        working-directory: casbe
+        run: pnpm prune --prod
 
       - name: Deploy to Azure
         uses: azure/webapps-deploy@v3
