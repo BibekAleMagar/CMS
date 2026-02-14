@@ -73,8 +73,11 @@ export const UpdateCaseStatus = () => {
           defaultValue={String(data.status)}
           onValueChange={handleSelectClick}
         >
-          <SelectTrigger className="min-w-[130px]">
-            <SelectValue placeholder="Select a status" className="text-black" />
+          <SelectTrigger className="min-w-[130px] text-black cursor-pointer">
+            <SelectValue
+              placeholder="Select a status"
+              className="text-black bg-black"
+            />
           </SelectTrigger>
           <SelectContent>
             {caseStatus.map((status) => (
@@ -90,7 +93,6 @@ export const UpdateCaseStatus = () => {
         </Select>
       )}
 
-      {/* Separate Dialog for Confirmation */}
       <Dialog open={isConfirmOpen} onOpenChange={setIsConfirmOpen}>
         <DialogContent>
           <DialogHeader>

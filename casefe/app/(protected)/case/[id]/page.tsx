@@ -25,6 +25,8 @@ import {
   XCircle,
   AlertCircle,
   Hourglass,
+  Calendar1,
+  Speaker,
 } from "lucide-react";
 import Link from "next/link";
 
@@ -66,6 +68,7 @@ import {
   DropdownMenuTrigger,
 } from "@/src/components/ui/dropdown-menu";
 import { cn } from "@/src/lib/utils";
+import { AddCaseHearingDate } from "@/src/components/pages/Case/AdddCaseHearingDate";
 
 const statusConfig = {
   [CaseStatus.PENDING]: {
@@ -174,7 +177,12 @@ const CaseDetails = () => {
               {user?.role === UserRole.CLIENT && !data.lawyer && (
                 <AssignLawyerDialog />
               )}
-              {user?.role === UserRole.LAWYER && <UpdateCaseStatus />}
+              {user?.role === UserRole.LAWYER && (
+                <>
+                  <AddCaseHearingDate caseId={id} />
+                  <UpdateCaseStatus />
+                </>
+              )}
               <AddDocumentDialog />
             </div>
           </div>
@@ -325,6 +333,25 @@ const CaseDetails = () => {
                         icon={<StatusIcon className="h-4 w-4" />}
                         label="Current Status"
                         value={status.label}
+                        bgColor={status.bgColor}
+                        textColor={status.color}
+                      />
+
+                      <InfoItem
+                        icon={<Speaker className="h-4 w-4" />}
+                        label="Next Hearing"
+                        value={
+                          data?.nextHearing
+                            ? new Date(data.nextHearing).toLocaleString(
+                                "en-US",
+                                {
+                                  month: "short",
+                                  day: "numeric",
+                                  year: "numeric",
+                                },
+                              )
+                            : "Not Scheduled"
+                        }
                         bgColor={status.bgColor}
                         textColor={status.color}
                       />

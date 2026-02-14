@@ -19,3 +19,9 @@ export const useUpdateCaseStatus = () => {
     queryKeyToInvalidate: ["case"],
   });
 };
+
+export const useUpdateCase = () => {
+  return useUpdate<UpdateCaseDto, unknown>({
+    queryKeyToInvalidate: ["case"],
+  });
+};
