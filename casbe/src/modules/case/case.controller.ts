@@ -52,6 +52,15 @@ export class CaseController {
     // Wrap status in UpdateCaseDto
     return this.caseService.update(+id, { status } as UpdateCaseDto, user);
   }
+  @Patch(':id')
+  @Roles(UserRole.SUPER_ADMIN, UserRole.LAWYER, UserRole.CLIENT)
+  update(
+    @Param('id') id: string,
+    @Body() updateCaseDto: UpdateCaseDto,
+    @CurrentUser() user: User,
+  ) {
+    return this.caseService.update(+id, updateCaseDto, user);
+  }
 
   @Delete(':id')
   @Roles(UserRole.SUPER_ADMIN)

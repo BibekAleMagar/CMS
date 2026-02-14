@@ -116,6 +116,10 @@ export class CaseService {
       }
       caseEntity.lawyerId = lawyer.id;
     }
+
+    if (updateCaseDto.nextHearingDate) {
+      caseEntity.nextHearing = updateCaseDto.nextHearingDate;
+    }
     return this.caseRepository.save(caseEntity);
   }
 
