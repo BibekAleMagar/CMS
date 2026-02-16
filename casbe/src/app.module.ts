@@ -12,6 +12,8 @@ import { CloudinaryModule } from './modules/cloudinary/cloudinary.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { getTypeOrmConfig } from './config/typeorm.config';
+import { SocketModule } from './modules/socket/socket.module';
+import { MessageModule } from './modules/message/message.module';
 
 @Module({
   imports: [
@@ -31,6 +33,8 @@ import { getTypeOrmConfig } from './config/typeorm.config';
     ActivityModule,
     CloudinaryModule,
     AuthModule,
+    SocketModule,
+    MessageModule,
   ],
   controllers: [AppController],
   providers: [AppService],

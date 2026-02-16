@@ -13,6 +13,7 @@ import { CaseDocument } from 'src/modules/documents/entities/document.entity';
 import { ActivityLog } from 'src/modules/activity/entities/activity.entity';
 import { LawyerProfile } from './lawyer-profile.entity';
 import { Exclude } from 'class-transformer';
+import { Message } from 'src/modules/message/entities/message.entity';
 @Entity('users')
 export class User {
   @PrimaryGeneratedColumn()
@@ -66,4 +67,10 @@ export class User {
 
   @OneToMany(() => ActivityLog, (log) => log.user)
   activityLogs: ActivityLog[];
+
+  @OneToMany(() => Message, (message) => message.sender)
+  sentMessages: Message[];
+
+  @OneToMany(() => Message, (message) => message.receiver)
+  receivedMessages: Message[];
 }
