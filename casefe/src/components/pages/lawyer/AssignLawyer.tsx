@@ -39,7 +39,7 @@ export const AssignLawyerDialog = () => {
   const handleAssignLawyer = async (lawyerId: number) => {
     try {
       await mutateAsync({
-        url: `/case/update-lawyer/${id}`,
+        url: `/case/${id}`,
         payload: { lawyerId },
         successMessage: "Lawyer assigned successfully",
       });
