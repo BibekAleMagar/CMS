@@ -1,0 +1,39 @@
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: legal-case-api
+    restart: always
+    ports:
+      - '3001:3000'
+    env_file:
+      - .env
+    environment:
+      # Force the app to look for the 'db' container instead of localhost
+      - DB_HOST=db
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    image: mysql:8.0
+    container_name: legal-case-db
+    restart: always
+    environment:
+      MYSQL_DATABASE: CMS
+      MYSQL_USER: kendrix
+      MYSQL_PASSWORD: kendrix
+      MYSQL_ROOT_PASSWORD: kendrix
+    ports:
+      - '3307:3306' # Use 3307 on your host to stay out of the way of local MySQL
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ['CMD', 'mysqladmin', 'ping', '-h', 'localhost']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  mysql_data:
