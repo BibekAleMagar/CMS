@@ -1,45 +1,54 @@
-import { CaseStatus } from "src/common/enums/case-status.enum";
-import { IsString,IsNotEmpty, IsNumber, IsOptional, IsDateString, IsEnum } from "class-validator";
-import { ApiProperty } from "@nestjs/swagger";
+import { CaseStatus } from 'src/common/enums/case-status.enum';
+import {
+  IsString,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsDateString,
+  IsEnum,
+} from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger';
+import { CaseType } from 'src/common/enums/case-type.enum';
 
 export class CreateCaseDto {
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty({ example: 'Title of your document' })
+  title: string;
 
-    @IsString()
-    @IsNotEmpty()
-    @ApiProperty({example: "Title of your document"})
-    title: string;
+  @IsString()
+  @IsOptional()
+  @ApiProperty({ example: 'short description' })
+  description?: string;
 
-    @IsString()
-    @IsOptional()
-    @ApiProperty({example: "short description"})
-    description?: string;
+  @IsNumber()
+  @IsOptional()
+  @ApiProperty({ example: 'lawyerID' })
+  lawyerId?: number;
 
-    @IsNumber()
-    @IsOptional()
-    @ApiProperty({example: "lawyerID"})
-    lawyerId?: number;
+  @IsOptional()
+  @IsEnum(CaseStatus)
+  status?: CaseStatus;
 
-    @IsOptional()
-    @IsEnum(CaseStatus)
-    status?: CaseStatus;
+  @IsOptional()
+  @IsEnum(CaseType)
+  caseType?: CaseType;
 
-    @IsNumber()
-    @IsNotEmpty()
-    @ApiProperty({example: "clientId"})
-    clientId: number;
+  @IsNumber()
+  @IsNotEmpty()
+  @ApiProperty({ example: 'clientId' })
+  clientId: number;
 
-    @IsString()
-    @IsOptional()
-    @ApiProperty({example: "court name"})
-    court?: string;
+  @IsString()
+  @IsOptional()
+  @ApiProperty({ example: 'court name' })
+  court?: string;
 
-    @IsString()
-    @IsOptional()
-    filingDate?: Date;
+  @IsString()
+  @IsOptional()
+  filingDate?: Date;
 
-    @IsDateString()
-    @IsOptional()
-    nextHearingDate?: Date;
-
-
+  @IsDateString()
+  @IsOptional()
+  nextHearingDate?: Date;
 }

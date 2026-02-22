@@ -62,6 +62,11 @@ export class CaseController {
     return this.caseService.update(+id, updateCaseDto, user);
   }
 
+  @Get(':id/recommended-lawyers')
+  async getRecommendedLawyers(@Param('id') id: number) {
+    return this.caseService.getRecommendedLawyers(id);
+  }
+
   @Delete(':id')
   @Roles(UserRole.SUPER_ADMIN)
   remove(@Param('id') id: string, @CurrentUser() user: User) {

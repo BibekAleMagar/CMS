@@ -12,6 +12,12 @@ import { Case } from './entities/case.entity';
 import { User } from '../user/entities/user.entity';
 import { UserRole } from 'src/common/enums/user-role.enum';
 import { CaseStatus } from 'src/common/enums/case-status.enum';
+import { AiAnalysisResult } from '../../common/types/AiResult';
+import { ConfigService } from '@nestjs/config';
+import { lastValueFrom, timeout } from 'rxjs';
+import { HttpService } from '@nestjs/axios';
+import { time } from 'console';
+import { CaseType } from 'src/common/enums/case-type.enum';
 
 @Injectable()
 export class CaseService {
@@ -20,6 +26,8 @@ export class CaseService {
     private caseRepository: Repository<Case>,
     @InjectRepository(User)
     private userRepository: Repository<User>,
+    private readonly configService: ConfigService,
+    private readonly httpService: HttpService,
   ) {}
 
   async create(createCaseDto: CreateCaseDto, user: User): Promise<Case> {
@@ -132,10 +140,91 @@ export class CaseService {
     await this.caseRepository.remove(caseEntity);
   }
 
+  async getRecommendedLawyers(caseId: number): Promise<{
+    predictedCategory: string | null;
+    confidence: number | null;
+    top3: Record<string, number> | null;
+    lawyers: User[];
+  }> {
+    const caseEntity = await this.caseRepository.findOne({
+      where: { id: caseId },
+    });
+    if (!caseEntity) throw new NotFoundException('Case not found');
+
+    const aiResult = await this.callAi(caseEntity);
+
+    if (!aiResult.suggestedSpecialty) {
+      throw new InternalServerErrorException(
+        'Failed to fetch recommended lawyers',
+      );
+    }
+
+    const caseType = this.mapAiCategoryToCaseType(aiResult.suggestedSpecialty);
+
+    if (!caseType) {
+      throw new InternalServerErrorException(
+        'Failed to fetch recommended lawyers',
+      );
+    }
+
+    const lawyers = await this.userRepository
+      .createQueryBuilder('user')
+      .where('user.role = :role', { role: UserRole.LAWYER })
+      .andWhere(':caseType = ANY(user.specializations)', { caseType })
+      .andWhere('user.isAvailable = :isAvailable', { isAvailable: true })
+      .orderBy('user.activeCaseCount', 'ASC')
+      .getMany();
+
+    return {
+      predictedCategory: aiResult.suggestedSpecialty,
+      confidence: aiResult.confidence,
+      top3: aiResult.top3,
+      lawyers,
+    };
+  }
+
   private async generateCaseNumber(): Promise<string> {
     const year = new Date().getFullYear();
     const count = await this.caseRepository.count();
     return `CASE-${year}-${String(count + 1).padStart(5, '0')}`;
+  }
+
+  async callAi(caseEntity: Case): Promise<AiAnalysisResult> {
+    try {
+      const baseUrl = this.configService.get<string>('AI_MODEL');
+      const payload = {
+        case_name: caseEntity?.title,
+        nature_of_suit: caseEntity.caseType,
+        summary: caseEntity.description,
+      };
+
+      const response = await lastValueFrom(
+        this.httpService.post(`${baseUrl}`, payload).pipe(timeout(5000)),
+      );
+      return {
+        suggestedSpecialty: response?.data?.suggested_specialty ?? null,
+        confidence: response?.data?.confidence ?? null,
+        top3: response?.data?.top3 ?? null,
+      };
+    } catch (error) {
+      console.log(error.response);
+      return { suggestedSpecialty: null, confidence: null, top3: null };
+    }
+  }
+
+  private mapAiCategoryToCaseType(category: string | null): CaseType | null {
+    if (!category) return null;
+
+    const map: Record<string, CaseType> = {
+      Civil_Litigation: CaseType.CIVIL,
+      Property_Estate: CaseType.PROPERTY,
+      Corporate_Contract: CaseType.CORPORATE,
+      Criminal: CaseType.CRIMINAL,
+      Family: CaseType.FAMILY,
+      Labour: CaseType.LABOUR,
+    };
+
+    return map[category] ?? null;
   }
 
   private checkAccess(caseEntity: Case, user: User) {

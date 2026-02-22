@@ -1,0 +1,8 @@
+export enum CaseType {
+  CRIMINAL = 'CRIMINAL',
+  CIVIL = 'CIVIL',
+  FAMILY = 'FAMILY',
+  CORPORATE = 'CORPORATE',
+  LABOUR = 'LABOUR',
+  PROPERTY = 'PROPERTY',
+}
