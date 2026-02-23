@@ -10,9 +10,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { LoginType } from "@/src/types/Login";
 import { useLogin } from "@/src/hooks/mutation/Login";
 import { useRouter } from "next/navigation";
-import { sweetAlert } from "@/src/lib/helper";
 import { AxiosError } from "axios";
 import { Label } from "@radix-ui/react-label";
+import { toast } from "react-toastify";
 
 const Login: React.FC = () => {
   const form = useForm<LoginType>({
@@ -36,7 +36,7 @@ const Login: React.FC = () => {
       });
       if (res?.accessToken) {
         sessionStorage.setItem("token", res.accessToken);
-        sweetAlert.success("Login Successful");
+        toast.success("Login Successful");
         router.push("/dashboard");
       }
     } catch (error) {

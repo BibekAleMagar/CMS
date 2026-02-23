@@ -1,45 +1,15 @@
-import Swal, { SweetAlertOptions } from "sweetalert2";
+import { toast, ToastOptions } from "react-toastify";
 
-const Alert = async (
-  success: boolean,
-  text: string,
-  closeButtonText = "OK",
-  options?: SweetAlertOptions
-) => {
-  try {
-    await Swal.fire({
-      titleText: success ? "Success" : "Failure",
-      icon: success ? "success" : "error",
-      text: text,
-      confirmButtonText: closeButtonText,
-      ...options,
-    });
-  } catch (error) {
-    console.error("SweetAlert error:", error);
+const Alert = (success: boolean, text: string, options?: ToastOptions) => {
+  if (success) {
+    toast.success(text, options);
+  } else {
+    toast.error(text, options);
   }
 };
 
 export const sweetAlert = {
-  success: (
-    text: string,
-    closeButtonText = "OK",
-    options?: SweetAlertOptions
-  ) => Alert(true, text, closeButtonText, options),
-  error: (text: string, closeButtonText = "OK", options?: SweetAlertOptions) =>
-    Alert(false, text, closeButtonText, options),
-};
+  success: (text: string, options?: ToastOptions) => Alert(true, text, options),
 
-export const getFilePath = (
-  imagePath: string | File | undefined | null
-): string => {
-  if (!imagePath || typeof imagePath !== "string") {
-    return "";
-  }
-
-  if (imagePath.startsWith("http://") || imagePath.startsWith("https://")) {
-    return imagePath.replace(/\\/g, "/");
-  }
-
-  const cleanedPath = imagePath.replace(/\\/g, "/").replace(/^\/+/, "");
-  return `${process.env.NEXT_PUBLIC_FILE_URL}/${cleanedPath.slice(7)}`;
+  error: (text: string, options?: ToastOptions) => Alert(false, text, options),
 };

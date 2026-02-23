@@ -25,8 +25,6 @@ import { CreateCaseDto } from "@/src/types/Case";
 import { createCaseSchema } from "@/src/validators/case";
 import { Input } from "../../ui/input";
 import { Textarea } from "../../ui/textarea";
-import { Label } from "../../ui/label";
-import { number } from "zod";
 
 export const CreateCaseDialog = () => {
   const { user } = useAuth();

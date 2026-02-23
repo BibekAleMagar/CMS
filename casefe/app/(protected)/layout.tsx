@@ -4,7 +4,9 @@ import { AuthProvider } from "@/src/context/useAuth";
 import React from "react";
 export const dynamic = "force-dynamic"; // This is to ensure that the layout is not cachedimport { cookies } from "next/headers" // remove
 import { cookies } from "next/headers"; // remove
+import { ToastContainer } from "react-toastify";
 import Navbar from "@/src/components/layout/Navbar";
+
 type Props = { children: React.ReactNode };
 
 const Layout = async ({ children }: Props) => {
@@ -14,6 +16,7 @@ const Layout = async ({ children }: Props) => {
 
   return (
     <SidebarProvider defaultOpen={isSidebarOpen}>
+      <ToastContainer position="top-right" autoClose={4000} />
       <AuthProvider>
         <CustomSidebar />
         <div className="relative basis-full bg-white">

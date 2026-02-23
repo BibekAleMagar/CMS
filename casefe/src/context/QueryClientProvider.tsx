@@ -3,9 +3,9 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import React, { ReactNode, useState } from "react";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
-import { sweetAlert } from "../lib/helper";
 import { MutationVariables } from "../hooks/react-query-helpers/usePost";
 import { handleCatchError } from "../helper/handleCatchError";
+import { toast } from "react-toastify";
 
 export function CustomQueryClientProvider({
   children,
@@ -35,13 +35,13 @@ export function CustomQueryClientProvider({
             },
             onSuccess: (_, variables: unknown) => {
               const typedVariables = variables as MutationVariables<unknown>;
-              sweetAlert.success(
-                typedVariables?.successMessage || "Data saved successfully."
+              toast.success(
+                typedVariables?.successMessage || "Data saved successfully.",
               );
             },
           },
         },
-      })
+      }),
   );
 
   return (
