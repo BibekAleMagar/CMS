@@ -21,6 +21,7 @@ import {
   CarouselPrevious,
 } from "../../ui/carousel";
 import { UpdateCaseDto } from "@/src/types/Case";
+import { useAiRecommendation } from "@/src/hooks/query/case";
 
 export const AssignLawyerDialog = () => {
   const param = useParams();
@@ -33,7 +34,8 @@ export const AssignLawyerDialog = () => {
     },
   });
 
-  const { data: lawyers } = useLawyer(isOpen);
+  const { data: lawyers, isLoading } = useAiRecommendation(id!, isOpen && !!id);
+  // const { data: lawyers } = useLawyer(isOpen);
   const { mutateAsync, isPending } = useAssignLawyer(); // Add mutation hook
 
   const handleAssignLawyer = async (lawyerId: number) => {
@@ -48,6 +50,10 @@ export const AssignLawyerDialog = () => {
       console.error("Failed to assign lawyer:", error);
     }
   };
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <>
@@ -78,7 +84,7 @@ export const AssignLawyerDialog = () => {
             <div className="relative px-4 sm:px-12">
               <Carousel className="w-full">
                 <CarouselContent>
-                  {lawyers?.map((lawyer) => (
+                  {lawyers?.lawyers?.map((lawyer) => (
                     <CarouselItem
                       key={lawyer.id}
                       className="md:basis-full lg:basis-full"
@@ -180,7 +186,7 @@ export const AssignLawyerDialog = () => {
           <div className="p-4 bg-gray-50 border-t text-center">
             {lawyers && (
               <p className="text-xs font-medium text-gray-500">
-                Swipe to view {lawyers.length} available professionals
+                Swipe to view {lawyers?.lawyers?.length} available professionals
               </p>
             )}
           </div>
