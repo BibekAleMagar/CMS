@@ -43,7 +43,6 @@ const Register: React.FC = () => {
   const role = form.watch("role");
   const { mutateAsync, isPending } = useRegister();
   const onSubmit = async (data: RegisterType) => {
-    debugger;
     try {
       const res = await mutateAsync({
         payload: data,

@@ -1,7 +1,6 @@
 import { useAuth } from "@/src/context/useAuth";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { useLawyer } from "@/src/hooks/query/lawyer";
 import { useParams } from "next/navigation";
 import { useAssignLawyer } from "@/src/hooks/mutation/case";
 import {
@@ -35,8 +34,7 @@ export const AssignLawyerDialog = () => {
   });
 
   const { data: lawyers, isLoading } = useAiRecommendation(id!, isOpen && !!id);
-  // const { data: lawyers } = useLawyer(isOpen);
-  const { mutateAsync, isPending } = useAssignLawyer(); // Add mutation hook
+  const { mutateAsync, isPending } = useAssignLawyer();
 
   const handleAssignLawyer = async (lawyerId: number) => {
     try {
@@ -51,36 +49,43 @@ export const AssignLawyerDialog = () => {
     }
   };
 
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
-
   return (
-    <>
-      <Dialog
-        open={isOpen}
-        onOpenChange={(open) => {
-          setIsopen(open);
-          form.reset();
-        }}
+    <Dialog
+      open={isOpen}
+      onOpenChange={(open) => {
+        setIsopen(open);
+        form.reset();
+      }}
+    >
+      <DialogTrigger asChild>
+        <Button className="cursor-pointer w-full sm:w-auto">
+          Assign Lawyer
+        </Button>
+      </DialogTrigger>
+
+      <DialogContent
+        onInteractOutside={(e) => e.preventDefault()}
+        className="w-[92vw] max-w-4xl lg:max-w-5xl p-0 overflow-hidden bg-white text-black sm:rounded-lg"
       >
-        <DialogTrigger asChild>
-          <Button className="cursor-pointer w-full sm:w-auto">
+        <DialogHeader className="p-4 sm:p-6 border-b">
+          <DialogTitle className="text-xl sm:text-2xl font-bold">
             Assign Lawyer
-          </Button>
-        </DialogTrigger>
+          </DialogTitle>
+        </DialogHeader>
 
-        <DialogContent
-          onInteractOutside={(e) => e.preventDefault()}
-          className="w-[92vw] max-w-4xl lg:max-w-5xl p-0 overflow-hidden bg-white text-black sm:rounded-lg"
-        >
-          <DialogHeader className="p-4 sm:p-6 border-b">
-            <DialogTitle className="text-xl sm:text-2xl font-bold">
-              Assign Lawyer
-            </DialogTitle>
-          </DialogHeader>
-
-          <div className="p-4 sm:p-8 max-h-[70vh] overflow-y-auto">
+        <div className="p-4 sm:p-8 max-h-[70vh] overflow-y-auto">
+          {/* ✅ Loading state is now INSIDE the dialog */}
+          {isLoading ? (
+            <div className="flex items-center justify-center h-40">
+              <p className="text-gray-500 animate-pulse">
+                Finding best lawyers for this case...
+              </p>
+            </div>
+          ) : !lawyers?.lawyers?.length ? (
+            <div className="flex items-center justify-center h-40">
+              <p className="text-gray-500">No lawyers available.</p>
+            </div>
+          ) : (
             <div className="relative px-4 sm:px-12">
               <Carousel className="w-full">
                 <CarouselContent>
@@ -92,7 +97,6 @@ export const AssignLawyerDialog = () => {
                       <Card className="border-2 shadow-sm">
                         <CardContent className="p-4 sm:p-8">
                           <div className="flex flex-col items-center space-y-4">
-                            {/* Avatar Section */}
                             <div className="relative">
                               {lawyer.avatar ? (
                                 <img
@@ -108,7 +112,6 @@ export const AssignLawyerDialog = () => {
                               )}
                             </div>
 
-                            {/* Header Info */}
                             <div className="text-center space-y-1">
                               <h3 className="text-xl sm:text-2xl font-bold">
                                 {lawyer.firstName} {lawyer.lastName}
@@ -123,7 +126,6 @@ export const AssignLawyerDialog = () => {
                               )}
                             </div>
 
-                            {/* Profile Details */}
                             {lawyer.lawyerProfile && (
                               <div className="w-full grid grid-cols-1 gap-4 pt-4 border-t">
                                 {lawyer.lawyerProfile.specializations?.length >
@@ -181,17 +183,17 @@ export const AssignLawyerDialog = () => {
                 <CarouselNext className="hidden sm:flex -right-6 lg:-right-12 h-10 w-10 bg-white text-black cursor-pointer" />
               </Carousel>
             </div>
-          </div>
+          )}
+        </div>
 
-          <div className="p-4 bg-gray-50 border-t text-center">
-            {lawyers && (
-              <p className="text-xs font-medium text-gray-500">
-                Swipe to view {lawyers?.lawyers?.length} available professionals
-              </p>
-            )}
-          </div>
-        </DialogContent>
-      </Dialog>
-    </>
+        <div className="p-4 bg-gray-50 border-t text-center">
+          {lawyers && (
+            <p className="text-xs font-medium text-gray-500">
+              Swipe to view {lawyers?.lawyers?.length} available professionals
+            </p>
+          )}
+        </div>
+      </DialogContent>
+    </Dialog>
   );
 };

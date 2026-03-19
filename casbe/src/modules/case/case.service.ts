@@ -16,7 +16,6 @@ import { AiAnalysisResult } from '../../common/types/AiResult';
 import { ConfigService } from '@nestjs/config';
 import { lastValueFrom, timeout } from 'rxjs';
 import { HttpService } from '@nestjs/axios';
-import { time } from 'console';
 import { CaseType } from 'src/common/enums/case-type.enum';
 
 @Injectable()
@@ -100,9 +99,6 @@ export class CaseService {
   ): Promise<Case> {
     const caseEntity = await this.findOne(id, currentUser);
 
-    const isUpdatingLawyerOnly =
-      updateCaseDto.lawyerId && !updateCaseDto.status;
-
     if (updateCaseDto?.status && currentUser?.role === UserRole?.CLIENT) {
       throw new ForbiddenException('Client cannot update status');
     }
@@ -128,6 +124,7 @@ export class CaseService {
     if (updateCaseDto.nextHearingDate) {
       caseEntity.nextHearing = updateCaseDto.nextHearingDate;
     }
+
     return this.caseRepository.save(caseEntity);
   }
 
@@ -152,6 +149,7 @@ export class CaseService {
     if (!caseEntity) throw new NotFoundException('Case not found');
 
     const aiResult = await this.callAi(caseEntity);
+    console.log('AI Result:', aiResult);
 
     if (!aiResult.suggestedSpecialty) {
       throw new InternalServerErrorException(
@@ -160,6 +158,7 @@ export class CaseService {
     }
 
     const caseType = this.mapAiCategoryToCaseType(aiResult.suggestedSpecialty);
+    console.log('Mapped caseType:', caseType);
 
     if (!caseType) {
       throw new InternalServerErrorException(
@@ -168,12 +167,13 @@ export class CaseService {
     }
 
     const lawyers = await this.userRepository
-      .createQueryBuilder('user')
-      .where('user.role = :role', { role: UserRole.LAWYER })
-      .andWhere(':caseType = ANY(user.specializations)', { caseType })
-      .andWhere('user.isAvailable = :isAvailable', { isAvailable: true })
-      .orderBy('user.activeCaseCount', 'ASC')
-      .getMany();
+  .createQueryBuilder('user')
+  .leftJoinAndSelect('user.lawyerProfile', 'lawyerProfile')
+  .where('user.role = :role', { role: UserRole.LAWYER })
+  .andWhere('lawyerProfile.specializations LIKE :caseType', { 
+    caseType: `%${caseType}%` 
+  })
+  .getMany();
 
     return {
       predictedCategory: aiResult.suggestedSpecialty,
@@ -195,19 +195,25 @@ export class CaseService {
       const payload = {
         case_name: caseEntity?.title,
         nature_of_suit: caseEntity.caseType,
-        summary: caseEntity.description,
+        summary: caseEntity.description ?? caseEntity.title, // ✅ fallback for null
       };
+
+      console.log('Calling AI with payload:', payload);
+      console.log('AI URL:', baseUrl);
 
       const response = await lastValueFrom(
         this.httpService.post(`${baseUrl}`, payload).pipe(timeout(5000)),
       );
+
+      console.log('Raw AI response:', response?.data);
+
       return {
-        suggestedSpecialty: response?.data?.suggested_specialty ?? null,
+        suggestedSpecialty: response?.data?.predicted_category ?? null, // ✅ fixed key
         confidence: response?.data?.confidence ?? null,
-        top3: response?.data?.top3 ?? null,
+        top3: response?.data?.top_3 ?? null, // ✅ fixed key
       };
     } catch (error) {
-      console.log(error.response);
+      console.log('AI call error:', error.response);
       return { suggestedSpecialty: null, confidence: null, top3: null };
     }
   }

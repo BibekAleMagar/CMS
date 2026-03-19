@@ -16,7 +16,7 @@ export const useCaseById = (id: number) => {
 
 export const useAiRecommendation = (id: number, enabled: boolean) => {
   return useFetch<AiRecommendation>(`/case/${id}/recommended-lawyers`, {
-    queryKey: ["case", id],
+    queryKey: ["case", id, "recommended-lawyers"],
     enabled: enabled && !!id,
   });
 };

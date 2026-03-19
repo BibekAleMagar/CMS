@@ -21,12 +21,22 @@ async function bootstrap() {
   });
   const dataSource = app.get(DataSource);
   const config = new DocumentBuilder()
-    .setTitle('swagger')
-    .setVersion('1.0')
-    .build();
+  .setTitle('CMS API')
+  .setDescription('Legal Case Management System API')
+  .setVersion('1.0')
+  .addBearerAuth(
+    {
+      type: 'http',
+      scheme: 'bearer',
+      bearerFormat: 'JWT',
+      in: 'header',
+    },
+    'access-token', // name (important)
+  )
+  .build();
 
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api', app, document);
+  SwaggerModule.setup('swagger', app, document);
 
   await app.listen(process.env.PORT ?? 3001);
 }
