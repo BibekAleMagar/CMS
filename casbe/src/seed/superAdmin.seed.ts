@@ -7,7 +7,7 @@ export async function createSuperAdmin(dataSource: DataSource) {
   const repo = dataSource.getRepository(User);
 
   const exists = await repo.findOne({
-    where: { email: 'superadmin@example.com' },
+    where: { email: 'superadmin@gmail.com' },
   });
 
   if (exists) {
@@ -16,7 +16,7 @@ export async function createSuperAdmin(dataSource: DataSource) {
   }
 
   const user = repo.create({
-  email: 'superadmin@example.com',
+  email: 'superadmin@gmail.com',
   password: await bcrypt.hash('SuperAdmin@123', 10),
   firstName: 'Super',
   lastName: 'Admin',

@@ -57,7 +57,65 @@ export class CaseService {
     if (user.role === UserRole.CLIENT) {
       query = query.where('case.clientId = :userId', { userId: user.id });
     }
+    if (user.role === UserRole.SUPER_ADMIN) {
+      query = query.orderBy('case.createdAt', 'DESC');
+    }
     return query.getMany();
+  }
+
+  async chartStats() {
+  const [byStatus, byType, byMonth] = await Promise.all([
+    this.caseRepository
+      .createQueryBuilder('case')
+      .select('case.status', 'status')
+      .addSelect('COUNT(*)', 'count')
+      .groupBy('case.status')
+      .getRawMany(),
+
+    this.caseRepository
+      .createQueryBuilder('case')
+      .select('case.caseType', 'caseType')
+      .addSelect('COUNT(*)', 'count')
+      .groupBy('case.caseType')
+      .getRawMany(),
+
+    this.caseRepository
+      .createQueryBuilder('case')
+      .select("DATE_FORMAT(case.createdAt, '%Y-%m')", 'month') // MySQL
+      // .select("strftime('%Y-%m', case.createdAt)", 'month')  // SQLite
+      // .select("TO_CHAR(case.createdAt, 'YYYY-MM')", 'month') // PostgreSQL
+      .addSelect('COUNT(*)', 'count')
+      .groupBy('month')
+      .orderBy('month', 'ASC')
+      .getRawMany(),
+  ]);
+
+  return {
+    byStatus: byStatus.map((s) => ({ ...s, count: Number(s.count) })),
+    byType: byType.map((t) => ({ ...t, count: Number(t.count) })),
+    byMonth: byMonth.map((m) => ({ ...m, count: Number(m.count) })),
+  };
+}
+
+  async dashboardStats(): Promise<{
+    totalCases: number;
+    totalClients: number;
+    totalLawyers: number;
+    totalUsers: number;
+  }> {    
+    const [totalCases, totalClients, totalLawyers, totalUsers] = await Promise.all([
+      this.caseRepository.count(),
+      this.userRepository.count({ where: { role: UserRole.CLIENT } }),
+      this.userRepository.count({ where: { role: UserRole.LAWYER } }),
+      this.userRepository.count(),
+    ]);
+
+    return {
+      totalCases,
+      totalClients,
+      totalLawyers,
+      totalUsers,
+    };
   }
 
   async findOne(id: number, user: User): Promise<Case> {

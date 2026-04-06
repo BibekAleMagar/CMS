@@ -1,4 +1,4 @@
-import { LucideIcon, LayoutDashboard, Landmark } from "lucide-react";
+import { LucideIcon, LayoutDashboard, Landmark, User2 } from "lucide-react";
 import { UserRole } from "../types/enums/user-role.enum";
 
 export type IconType = LucideIcon;
@@ -21,7 +21,13 @@ export const sidebarItems: SidebarItemsType[] = [
   {
     title: "Case",
     url: "/case",
-    roles: [UserRole.CLIENT, UserRole.LAWYER],
+    roles: [UserRole.CLIENT, UserRole.LAWYER, UserRole.SUPER_ADMIN],
     icon: Landmark,
   },
+  {
+    title: "User",
+    url: "/user",
+    roles: [UserRole.SUPER_ADMIN],
+    icon: User2
+  }
 ];

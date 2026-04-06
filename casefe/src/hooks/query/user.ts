@@ -12,3 +12,9 @@ export const useUserById = (id?:string) => {
         
     )
 }
+
+export const useUsers = () => {
+    return useFetch<User[]>("/user", {
+        queryKey: ["user"],
+    })
+}

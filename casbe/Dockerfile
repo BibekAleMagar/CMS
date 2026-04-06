@@ -11,7 +11,7 @@ COPY pnpm-lock.yaml package.json ./
 # Use pnpm fetch to cache dependencies
 RUN pnpm fetch
 COPY . .
-RUN pnpm install --offline --frozen-lockfile
+RUN CI=true pnpm install --offline --frozen-lockfile
 
 # --- Stage 3: Build ---
 FROM base AS builder

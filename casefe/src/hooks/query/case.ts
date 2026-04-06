@@ -1,6 +1,8 @@
 import { GetCaseDto } from "@/src/types/Case";
 import useFetch from "../react-query-helpers/useFetch";
 import { AiRecommendation } from "@/src/types/AiRecommendation";
+import { ChartStatsResponse } from "@/src/types/chart";
+import { DashboardStats } from "@/src/types/dashboardstats";
 
 export const useCase = () => {
   return useFetch<GetCaseDto[]>("/case", {
@@ -20,3 +22,15 @@ export const useAiRecommendation = (id: number, enabled: boolean) => {
     enabled: enabled && !!id,
   });
 };
+
+export const useCaseChartStats = () => {
+  return useFetch<ChartStatsResponse>(`/case/chart-data`, {
+    queryKey: ["case", "chart-data"],
+  });
+}
+
+export const useCaseDashboardStats = () => {
+  return useFetch<DashboardStats>(`/case/dashboard-stats`, {
+    queryKey: ["case", "dashboard-stats"],
+  });
+}

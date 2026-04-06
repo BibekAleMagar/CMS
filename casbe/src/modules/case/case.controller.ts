@@ -32,6 +32,18 @@ export class CaseController {
     return this.caseService.create(createCaseDto, user as any);
   }
 
+  @Get('chart-data')
+  @Roles(UserRole.SUPER_ADMIN)
+  async getChartStats() {
+    return this.caseService.chartStats();
+  }
+
+  @Get('dashboard-stats')
+  @Roles(UserRole.SUPER_ADMIN)
+  async getDashboardStats() {
+    return this.caseService.dashboardStats();
+  }
+
   @Get()
   findAll(@CurrentUser() user: User) {
     return this.caseService.findAll(user);

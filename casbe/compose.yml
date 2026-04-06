@@ -1,16 +1,16 @@
 services:
   api:
+    image: ghcr.io/bibekalemagar/casebe:latest
     build:
       context: .
       dockerfile: Dockerfile
     container_name: legal-case-api
     restart: always
     ports:
-      - '3001:3000'
+      - '3001:3001'
     env_file:
       - .env
     environment:
-      # Force the app to look for the 'db' container instead of localhost
       - DB_HOST=db
     depends_on:
       db:
@@ -26,7 +26,7 @@ services:
       MYSQL_PASSWORD: kendrix
       MYSQL_ROOT_PASSWORD: kendrix
     ports:
-      - '3307:3306' # Use 3307 on your host to stay out of the way of local MySQL
+      - '3307:3306' 
     volumes:
       - mysql_data:/var/lib/mysql
     healthcheck:
