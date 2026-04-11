@@ -1,5 +1,7 @@
 "use client";
 
+import ClientDashboard from "@/src/components/pages/dashboard/client/ClientDashboard";
+import LawyerDashboard from "@/src/components/pages/dashboard/lawyerDashboard";
 import { SuperAdminDashboard } from "@/src/components/pages/dashboard/superAdmin";
 import { useAuth } from "@/src/context/useAuth";
 import { useUserById } from "@/src/hooks/query/user";
@@ -13,9 +15,9 @@ const Dashboard = () => {
       <div className="text-black">
         <h1>
           {user?.role === "CLIENT" ? (
-            "Hello I am Client"
+            <ClientDashboard />
           ) : user?.role === "LAWYER" ? (
-            " Hello I am Lawyer"
+            <LawyerDashboard />
           ) : user?.role === "SUPER_ADMIN" ? (
             <SuperAdminDashboard />
           ) : null}
